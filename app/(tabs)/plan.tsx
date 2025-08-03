@@ -11,17 +11,23 @@ import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Plan() {
-  const [debts, setDebts] = useState<Debt[]>([]);
+  const [pendingDebts, setPendingDebts] = useState<Debt[]>([]);
+  const [paidDebts, setPaidDebts] = useState<Debt[]>([]);
 
   const fetchDebts = async () => {
     try {
       const data = await AsyncStorage.getItem("debts");
       if (data !== null) {
         const fetchedDebts: Debt[] = JSON.parse(data);
-        const adjustedDebts = fetchedDebts
+        const adjustedPendingDebts = fetchedDebts
           .filter((debt) => debt.balance > 0)
           .sort((a, b) => a.balance - b.balance);
-        setDebts(adjustedDebts);
+        const adjustedPaidDebts = fetchedDebts.filter(
+          (debt) => debt.balance === 0
+        );
+
+        setPaidDebts(adjustedPaidDebts);
+        setPendingDebts(adjustedPendingDebts);
       }
     } catch (e) {
       console.error("Error fetching user:", e);
@@ -48,7 +54,7 @@ export default function Plan() {
             <Card className="flex-1 items-center">
               <Text className="font-bold text-2xl text-black">
                 {(
-                  debts.reduce((sum, debt) => {
+                  pendingDebts.reduce((sum, debt) => {
                     return (sum += debt.balance);
                   }, 0) / 100
                 ).toLocaleString("en-US", {
@@ -61,7 +67,7 @@ export default function Plan() {
             <Card className="flex-1 items-center">
               <Text className="font-bold text-2xl text-black">
                 {(
-                  debts.reduce((sum, debt) => {
+                  pendingDebts.reduce((sum, debt) => {
                     return (sum += debt.minPayment);
                   }, 0) / 100
                 ).toLocaleString("en-US", {
@@ -74,8 +80,20 @@ export default function Plan() {
           </View>
         </VStack>
 
+        <Heading size="xl" className="m-6">
+          Pending debts ({pendingDebts.length})
+        </Heading>
         <VStack space="sm">
-          {debts.map((debt) => {
+          {pendingDebts.map((debt) => {
+            return <DebtCard key={debt.id} debt={debt} progress={true} />;
+          })}
+        </VStack>
+
+        <Heading size="xl" className="m-6">
+          Paid debts ({paidDebts.length})
+        </Heading>
+        <VStack space="sm">
+          {paidDebts.map((debt) => {
             return <DebtCard key={debt.id} debt={debt} progress={true} />;
           })}
           <Button size="lg" className="">
