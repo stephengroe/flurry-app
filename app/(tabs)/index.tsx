@@ -8,7 +8,7 @@ export default function Index() {
   return (
     <SafeAreaView>
       <View>
-        <Card size="lg" variant="elevated"  className="m-3">
+        <Card size="lg" variant="elevated" className="m-3">
           <Text size="lg" className="mb-1">
             Home
           </Text>

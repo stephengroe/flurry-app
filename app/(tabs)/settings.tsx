@@ -8,7 +8,7 @@ export default function Settings() {
   return (
     <SafeAreaView>
       <View>
-        <Card size="lg" variant="elevated"  className="m-3">
+        <Card size="lg" variant="elevated" className="m-3">
           <Text size="lg" className="mb-1">
             Settings
           </Text>

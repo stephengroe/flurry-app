@@ -4,12 +4,11 @@ import { Text } from "@/components/ui/text";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-
 export default function Plan() {
   return (
     <SafeAreaView>
       <View>
-        <Card size="lg" variant="elevated"  className="m-3">
+        <Card size="lg" variant="elevated" className="m-3">
           <Text size="lg" className="mb-1">
             Plan
           </Text>
@@ -17,6 +16,5 @@ export default function Plan() {
         </Card>
       </View>
     </SafeAreaView>
-
   );
 }
