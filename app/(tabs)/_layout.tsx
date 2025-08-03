@@ -9,8 +9,12 @@ export default function TabLayout() {
         options={{
           title: "Home",
           headerShown: false,
-          tabBarIcon: ({ color }) => (
-            <Ionicons name="home-outline" size={24} color="grey" />
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? "home" : "home-outline"}
+              size={24}
+              color={focused ? "black" : "grey"}
+            />
           ),
         }}
       />
@@ -19,8 +23,12 @@ export default function TabLayout() {
         options={{
           title: "Activity",
           headerShown: false,
-          tabBarIcon: ({ color }) => (
-            <Ionicons name="time-outline" size={24} color="grey" />
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? "time" : "time-outline"}
+              size={24}
+              color={focused ? "black" : "grey"}
+            />
           ),
         }}
       />
@@ -29,8 +37,12 @@ export default function TabLayout() {
         options={{
           title: "Plan",
           headerShown: false,
-          tabBarIcon: ({ color }) => (
-            <Ionicons name="calendar-clear-outline" size={24} color="grey" />
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? "calendar-clear" : "calendar-clear-outline"}
+              size={24}
+              color={focused ? "black" : "grey"}
+            />
           ),
         }}
       />
@@ -39,8 +51,12 @@ export default function TabLayout() {
         options={{
           title: "Settings",
           headerShown: false,
-          tabBarIcon: ({ color }) => (
-            <Ionicons name="settings-outline" size={24} color="grey" />
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? "settings" : "settings-outline"}
+              size={24}
+              color={focused ? "black" : "grey"}
+            />
           ),
         }}
       />
