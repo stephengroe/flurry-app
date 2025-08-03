@@ -14,7 +14,7 @@ export function DebtCard({
   progress: boolean;
 }) {
   return (
-    <Card className="p-6 gap-2">
+    <Card className="p-6 gap-4">
       <View className="flex-row justify-between">
         <View>
           <Heading size="md">{debt.name}</Heading>
