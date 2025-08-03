@@ -10,6 +10,8 @@ import { Button, ButtonText } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
+import { VStack } from "@/components/ui/vstack";
+import { Debt } from "@/models/Debt";
 import { User } from "@/models/User";
 import { generateSampleData } from "@/scripts/generateSampleData";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -28,7 +30,9 @@ export default function Index() {
 
   const [user, setUser] = useState<User>(defaultUser);
   const [defaultData, setDefaultData] = useState(true);
-  const [showAlertDialog, setShowAlertDialog] = React.useState(false);
+  const [showAlertDialog, setShowAlertDialog] = useState(false);
+  const [debts, setDebts] = useState<Debt[]>([]);
+
   const handleClose = () => setShowAlertDialog(false);
 
   const fetchUser = async () => {
@@ -38,6 +42,18 @@ export default function Index() {
         const fetchedUser: User = JSON.parse(data);
         setUser(fetchedUser);
         setDefaultData(false);
+      }
+    } catch (e) {
+      console.error("Error fetching user:", e);
+    }
+  };
+
+  const fetchDebts = async () => {
+    try {
+      const data = await AsyncStorage.getItem("debts");
+      if (data !== null) {
+        const fetchedDebts: Debt[] = JSON.parse(data);
+        setDebts(fetchedDebts);
       }
     } catch (e) {
       console.error("Error fetching user:", e);
@@ -65,56 +81,69 @@ export default function Index() {
 
   useEffect(() => {
     fetchUser();
+    fetchDebts();
   }, []);
 
   return (
     <SafeAreaView>
-      <View>
-        <Link href="/settings">
-          <Ionicons name="settings-outline" size={24} color="grey" />
-        </Link>
-        <Text>Welcome, {user.name}!</Text>
-        <Card size="lg" variant="elevated" className="m-3">
-          <Heading size="lg" className="mb-1">
-            Home
+      <VStack className="m-6 mb-3" space="lg">
+        <View className="flex-row">
+          <Heading size="3xl" className="flex-start">
+            {user.name === "User" ? "Welcome" : `Welcome, ${user.name}`}
           </Heading>
-          <Text size="lg">
-            This screen will show an overview of debt repayment progress, plus
-            gamification (streaks + badges).
-          </Text>
+          <Link href="/settings">
+            <Ionicons name="settings-outline" size={24} color="grey" />
+          </Link>
+        </View>
+        <Card size="lg" variant="elevated" className="">
+          <Heading size="lg" className="mb-1">
+            April 2027
+          </Heading>
+          <Text>Debt freedom date</Text>
         </Card>
-        <Button onPress={handleSampleData}>
-          <ButtonText>Load sample data</ButtonText>
-        </Button>
-        <AlertDialog isOpen={showAlertDialog} onClose={handleClose} size="md">
-          <AlertDialogBackdrop />
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <Heading className="text-typography-950 font-semibold" size="md">
-                Overwrite existing data?
-              </Heading>
-            </AlertDialogHeader>
-            <AlertDialogBody className="mt-3 mb-4">
-              <Text size="md">
-                Loading sample data will erase all existing data and replace it
-                with sample data. This cannot be undone.
-              </Text>
-            </AlertDialogBody>
-            <AlertDialogFooter className="">
-              <Button
-                variant="outline"
-                action="secondary"
-                onPress={handleClose}
-                size="sm"
-              >
-                <ButtonText>Cancel</ButtonText>
-              </Button>
-              <Button size="sm" onPress={handleOverwrite}>
-                <ButtonText>Overwrite</ButtonText>
-              </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+        <View>
+          <Button onPress={handleSampleData}>
+            <ButtonText>Load sample data</ButtonText>
+          </Button>
+          <AlertDialog isOpen={showAlertDialog} onClose={handleClose} size="md">
+            <AlertDialogBackdrop />
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <Heading
+                  className="text-typography-950 font-semibold"
+                  size="md"
+                >
+                  Overwrite existing data?
+                </Heading>
+              </AlertDialogHeader>
+              <AlertDialogBody className="mt-3 mb-4">
+                <Text size="md">
+                  Loading sample data will erase all existing data and replace
+                  it with sample data. This cannot be undone.
+                </Text>
+              </AlertDialogBody>
+              <AlertDialogFooter className="">
+                <Button
+                  variant="outline"
+                  action="secondary"
+                  onPress={handleClose}
+                  size="sm"
+                >
+                  <ButtonText>Cancel</ButtonText>
+                </Button>
+                <Button size="sm" onPress={handleOverwrite}>
+                  <ButtonText>Overwrite</ButtonText>
+                </Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </View>
+      </VStack>
+
+      <View>
+        <Heading size="xl" className="m-6">
+          Debts
+        </Heading>
       </View>
     </SafeAreaView>
   );
