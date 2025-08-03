@@ -1,3 +1,4 @@
+import { DebtCard } from "@/components/debt-card";
 import {
   AlertDialog,
   AlertDialogBackdrop,
@@ -6,11 +7,9 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
 } from "@/components/ui/alert-dialog";
-import { Badge, BadgeText } from "@/components/ui/badge";
 import { Button, ButtonText } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
-import { Progress, ProgressFilledTrack } from "@/components/ui/progress";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { Debt } from "@/models/Debt";
@@ -156,39 +155,7 @@ export default function Index() {
           </Heading>
           <VStack space="sm">
             {debts.map((debt) => {
-              return (
-                <Card className="p-6 gap-2" key={debt.id}>
-                  <View className="flex-row justify-between">
-                    <View>
-                      <Heading size="md">{debt.name}</Heading>
-                      <Text>{debt.type}</Text>
-                    </View>
-                    <View className="gap-2 items-end flex-col">
-                      <Text size="2xl" className="font-bold text-black">
-                        {(debt.balance / 100).toLocaleString("en-US", {
-                          style: "currency",
-                          currency: "USD",
-                        })}
-                      </Text>
-                      <Badge
-                        size="md"
-                        variant="solid"
-                        action="success"
-                        className="w-auto"
-                      >
-                        <BadgeText>On track</BadgeText>
-                      </Badge>
-                    </View>
-                  </View>
-                  <Progress
-                    value={100 - (debt.balance / debt.initialValue) * 100}
-                    size="sm"
-                    orientation="horizontal"
-                  >
-                    <ProgressFilledTrack />
-                  </Progress>
-                </Card>
-              );
+              return <DebtCard key={debt.id} debt={debt} progress={false} />;
             })}
           </VStack>
         </View>
