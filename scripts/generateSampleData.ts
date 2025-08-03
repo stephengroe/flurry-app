@@ -13,7 +13,7 @@ export async function generateSampleData() {
   const sampleDebts: Debt[] = [
     {
       id: "d0",
-      name: "💳 Capital One",
+      name: "Capital One",
       initialValue: 0,
       balance: 0,
       minPayment: 0,
@@ -21,7 +21,7 @@ export async function generateSampleData() {
     },
     {
       id: "d1",
-      name: "💳 Chase Freedom",
+      name: "Chase Freedom",
       initialValue: 32539,
       balance: 9623,
       minPayment: 5000,
@@ -29,7 +29,7 @@ export async function generateSampleData() {
     },
     {
       id: "d2",
-      name: "💳 Apple Card",
+      name: "Apple Card",
       initialValue: 128954,
       balance: 128954,
       minPayment: 5000,
@@ -37,7 +37,7 @@ export async function generateSampleData() {
     },
     {
       id: "d3",
-      name: "💵 Personal Loan",
+      name: "Personal Loan",
       initialValue: 300000,
       balance: 278298,
       minPayment: 16700,
@@ -45,7 +45,7 @@ export async function generateSampleData() {
     },
     {
       id: "d4",
-      name: "🚗 Auto Loan",
+      name: "Auto Loan",
       initialValue: 2267485,
       balance: 1432113,
       minPayment: 750,
@@ -53,7 +53,7 @@ export async function generateSampleData() {
     },
     {
       id: "d5",
-      name: "🎓 Student Debt",
+      name: "Student Debt",
       initialValue: 3266436,
       balance: 2868535,
       minPayment: 456,

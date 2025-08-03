@@ -18,7 +18,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Link } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Index() {
@@ -85,66 +85,89 @@ export default function Index() {
   }, []);
 
   return (
-    <SafeAreaView>
-      <VStack className="m-6 mb-3" space="lg">
-        <View className="flex-row">
-          <Heading size="3xl" className="flex-start">
-            {user.name === "User" ? "Welcome" : `Welcome, ${user.name}`}
-          </Heading>
-          <Link href="/settings">
-            <Ionicons name="settings-outline" size={24} color="grey" />
-          </Link>
-        </View>
-        <Card size="lg" variant="elevated" className="">
-          <Heading size="lg" className="mb-1">
-            April 2027
-          </Heading>
-          <Text>Debt freedom date</Text>
-        </Card>
-        <View>
-          <Button onPress={handleSampleData}>
-            <ButtonText>Load sample data</ButtonText>
-          </Button>
-          <AlertDialog isOpen={showAlertDialog} onClose={handleClose} size="md">
-            <AlertDialogBackdrop />
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <Heading
-                  className="text-typography-950 font-semibold"
-                  size="md"
-                >
-                  Overwrite existing data?
-                </Heading>
-              </AlertDialogHeader>
-              <AlertDialogBody className="mt-3 mb-4">
-                <Text size="md">
-                  Loading sample data will erase all existing data and replace
-                  it with sample data. This cannot be undone.
-                </Text>
-              </AlertDialogBody>
-              <AlertDialogFooter className="">
-                <Button
-                  variant="outline"
-                  action="secondary"
-                  onPress={handleClose}
-                  size="sm"
-                >
-                  <ButtonText>Cancel</ButtonText>
-                </Button>
-                <Button size="sm" onPress={handleOverwrite}>
-                  <ButtonText>Overwrite</ButtonText>
-                </Button>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </View>
-      </VStack>
+    <SafeAreaView className="overflow-auto">
+      <ScrollView>
+        <VStack className="m-6 mb-3" space="lg">
+          <View className="flex-row justify-between">
+            <Heading size="3xl" className="flex-start">
+              {user.name === "User" ? "Welcome" : `Welcome, ${user.name}`}
+            </Heading>
+            <Link href="/settings">
+              <Ionicons name="settings-outline" size={24} color="grey" />
+            </Link>
+          </View>
+          <Card size="lg" variant="elevated" className="">
+            <Heading size="lg" className="mb-1">
+              April 2027
+            </Heading>
+            <Text>Debt freedom date</Text>
+          </Card>
+          <View>
+            <Button onPress={handleSampleData}>
+              <ButtonText>Load sample data</ButtonText>
+            </Button>
+            <AlertDialog
+              isOpen={showAlertDialog}
+              onClose={handleClose}
+              size="md"
+            >
+              <AlertDialogBackdrop />
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <Heading
+                    className="text-typography-950 font-semibold"
+                    size="md"
+                  >
+                    Overwrite existing data?
+                  </Heading>
+                </AlertDialogHeader>
+                <AlertDialogBody className="mt-3 mb-4">
+                  <Text size="md">
+                    Loading sample data will erase all existing data and replace
+                    it with sample data. This cannot be undone.
+                  </Text>
+                </AlertDialogBody>
+                <AlertDialogFooter className="">
+                  <Button
+                    variant="outline"
+                    action="secondary"
+                    onPress={handleClose}
+                    size="sm"
+                  >
+                    <ButtonText>Cancel</ButtonText>
+                  </Button>
+                  <Button size="sm" onPress={handleOverwrite}>
+                    <ButtonText>Overwrite</ButtonText>
+                  </Button>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </View>
+        </VStack>
 
-      <View>
-        <Heading size="xl" className="m-6">
-          Debts
-        </Heading>
-      </View>
+        <View>
+          <Heading size="xl" className="m-6">
+            Debts
+          </Heading>
+          <VStack space="sm">
+            {debts.map((debt) => {
+              return (
+                <Card className="p-6 flex-row justify-between" key={debt.id}>
+                  <View>
+                    <Heading size="md">{debt.name}</Heading>
+                    <Text>
+                      ${(debt.minPayment / 100).toLocaleString()} min. payment
+                    </Text>
+                  </View>
+                  <Text size="2xl" className="font-bold text-black">
+                    ${(debt.balance / 100).toLocaleString()}
+                  </Text>
+                </Card>
+              );
+            })}
+          </VStack>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
