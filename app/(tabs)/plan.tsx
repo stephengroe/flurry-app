@@ -2,11 +2,12 @@ import { DebtCard } from "@/components/debt-card";
 import { Button, ButtonText } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { Debt } from "@/models/Debt";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
-import { ScrollView } from "react-native";
+import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Plan() {
@@ -42,6 +43,35 @@ export default function Plan() {
           <Card>
             <Heading>How does the debt snowball work?</Heading>
           </Card>
+
+          <View className="flex-row gap-4 w-full">
+            <Card className="flex-1 items-center">
+              <Text className="font-bold text-2xl text-black">
+                {(
+                  debts.reduce((sum, debt) => {
+                    return (sum += debt.balance);
+                  }, 0) / 100
+                ).toLocaleString("en-US", {
+                  style: "currency",
+                  currency: "USD",
+                })}
+              </Text>
+              <Text>total debt</Text>
+            </Card>
+            <Card className="flex-1 items-center">
+              <Text className="font-bold text-2xl text-black">
+                {(
+                  debts.reduce((sum, debt) => {
+                    return (sum += debt.minPayment);
+                  }, 0) / 100
+                ).toLocaleString("en-US", {
+                  style: "currency",
+                  currency: "USD",
+                })}
+              </Text>
+              <Text>due monthly</Text>
+            </Card>
+          </View>
         </VStack>
 
         <VStack space="sm">
