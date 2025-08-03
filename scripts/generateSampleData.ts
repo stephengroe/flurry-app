@@ -13,9 +13,9 @@ export async function generateSampleData() {
   const sampleDebts: Debt[] = [
     {
       id: "d0",
-      name: "Capital One",
+      name: "Chase Freedom",
       type: "Credit card",
-      initialValue: 0,
+      initialValue: 100000,
       balance: 0,
       minPayment: 0,
       target: false,
@@ -23,7 +23,7 @@ export async function generateSampleData() {
     },
     {
       id: "d1",
-      name: "Chase Freedom",
+      name: "Capital One",
       type: "Credit card",
       initialValue: 32539,
       balance: 9623,
