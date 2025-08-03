@@ -3,6 +3,7 @@ import { Heading } from "@/components/ui/heading";
 import { Progress, ProgressFilledTrack } from "@/components/ui/progress";
 import { Text } from "@/components/ui/text";
 import { Debt } from "@/models/Debt";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { View } from "react-native";
 import { Card } from "../ui/card";
 
@@ -14,10 +15,16 @@ export function DebtCard({
   progress: boolean;
 }) {
   return (
-    <Card className="p-6 gap-4">
+    <Card
+      className={`p-6 gap-4 ${debt.target ? "bg-blue-100" : "bg-white text-black"}`}
+    >
       <View className="flex-row justify-between">
         <View>
-          <Heading size="md">{debt.name}</Heading>
+          <View className="flex-row gap-2 items-center">
+            <Heading size="md">{debt.name}</Heading>
+            {debt.target && <Ionicons name="ribbon" size={16} color="blue" />}
+          </View>
+
           <Text>{debt.type}</Text>
         </View>
         <View className="gap-2 items-end flex-col">

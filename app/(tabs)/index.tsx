@@ -89,7 +89,7 @@ export default function Index() {
   }, []);
 
   return (
-    <SafeAreaView className="overflow-auto">
+    <SafeAreaView>
       <ScrollView>
         <VStack className="m-6 mb-3" space="lg">
           <View className="flex-row justify-between items-center">

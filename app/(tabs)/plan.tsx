@@ -1,4 +1,5 @@
 import { DebtCard } from "@/components/debt-card";
+import { Button, ButtonText } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
 import { VStack } from "@/components/ui/vstack";
@@ -31,9 +32,9 @@ export default function Plan() {
   }, []);
 
   return (
-    <SafeAreaView className="overflow-auto">
+    <SafeAreaView>
       <ScrollView>
-        <VStack className="m-6 mb-3" space="lg">
+        <VStack className="m-6 mb-3" space="2xl">
           <Heading size="3xl" className="flex-start">
             Plan
           </Heading>
@@ -41,12 +42,15 @@ export default function Plan() {
           <Card>
             <Heading>How does the debt snowball work?</Heading>
           </Card>
+        </VStack>
 
-          <VStack space="sm">
-            {debts.map((debt) => {
-              return <DebtCard key={debt.id} debt={debt} progress={true} />;
-            })}
-          </VStack>
+        <VStack space="sm">
+          {debts.map((debt) => {
+            return <DebtCard key={debt.id} debt={debt} progress={true} />;
+          })}
+          <Button size="lg" className="">
+            <ButtonText className="2xl">Add Debt</ButtonText>
+          </Button>
         </VStack>
       </ScrollView>
     </SafeAreaView>

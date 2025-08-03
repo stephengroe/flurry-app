@@ -18,7 +18,7 @@ export async function generateSampleData() {
       initialValue: 0,
       balance: 0,
       minPayment: 0,
-      target: true,
+      target: false,
       interest: 2199,
     },
     {
@@ -28,7 +28,7 @@ export async function generateSampleData() {
       initialValue: 32539,
       balance: 9623,
       minPayment: 5000,
-      target: false,
+      target: true,
       interest: 1825,
     },
     {
