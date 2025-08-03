@@ -309,9 +309,17 @@ export async function generateSampleData() {
     },
   ];
 
-  await AsyncStorage.setItem("user", JSON.stringify(sampleUser));
-  await AsyncStorage.setItem("debts", JSON.stringify(sampleDebts));
-  await AsyncStorage.setItem("payments", JSON.stringify(samplePayments));
+  const user: [string, string] = ["user", JSON.stringify(sampleUser)];
+  const debts: [string, string] = ["debts", JSON.stringify(sampleDebts)];
+  const payments: [string, string] = [
+    "payments",
+    JSON.stringify(samplePayments),
+  ];
 
-  console.log("Saved sample data");
+  try {
+    await AsyncStorage.multiSet([user, debts, payments]);
+    console.log("Saved sample data");
+  } catch (e) {
+    console.log(e);
+  }
 }
