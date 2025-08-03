@@ -54,7 +54,7 @@ export async function generateSampleData() {
     {
       id: "d4",
       name: "Honda Civic",
-      type: "Auto Loan",
+      type: "Auto loan",
       initialValue: 2267485,
       balance: 1432113,
       minPayment: 750,
