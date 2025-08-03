@@ -3,11 +3,11 @@ import { Tabs } from 'expo-router';
 export default function TabLayout() {
   return (
     <Tabs>
-      <Tabs.Screen name="index" options={{ href: null }} />
-      <Tabs.Screen name="home" options={{ title: "Home" }} />
-      <Tabs.Screen name="activity" options={{ title: "Activity" }} />
-      <Tabs.Screen name="plan" options={{ title: "Plan" }} />
-      <Tabs.Screen name="settings" options={{ title: "Settings" }} />
+      <Tabs.Screen name="index" options={{ href: null, headerShown: false }}  />
+      <Tabs.Screen name="home" options={{ title: "Home", headerShown: false }} />
+      <Tabs.Screen name="activity" options={{ title: "Activity", headerShown: false  }} />
+      <Tabs.Screen name="plan" options={{ title: "Plan", headerShown: false  }} />
+      <Tabs.Screen name="settings" options={{ title: "Settings", headerShown: false  }} />
     </Tabs>
   );
 }

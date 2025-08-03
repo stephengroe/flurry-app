@@ -6,7 +6,7 @@ export default function RootLayout() {
   return (
     <GluestackUIProvider mode="light">
       <Stack>
-        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       </Stack>
     </GluestackUIProvider>
   )
