@@ -54,7 +54,8 @@ export default function Index() {
       const data = await AsyncStorage.getItem("debts");
       if (data !== null) {
         const fetchedDebts: Debt[] = JSON.parse(data);
-        setDebts(fetchedDebts);
+        const sortedDebts = fetchedDebts.sort((a, b) => a.balance - b.balance);
+        setDebts(sortedDebts);
       }
     } catch (e) {
       console.error("Error fetching user:", e);
