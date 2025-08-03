@@ -9,10 +9,13 @@ export default function Index() {
     <SafeAreaView>
       <View>
         <Card size="lg" variant="elevated" className="m-3">
-          <Text size="lg" className="mb-1">
+          <Heading size="lg" className="mb-1">
             Home
+          </Heading>
+          <Text size="lg">
+            This screen will show an overview of debt repayment progress, plus
+            gamification (streaks + badges).
           </Text>
-          <Heading size="lg">April 2027</Heading>
         </Card>
       </View>
     </SafeAreaView>

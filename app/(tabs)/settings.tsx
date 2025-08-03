@@ -9,10 +9,10 @@ export default function Settings() {
     <SafeAreaView>
       <View>
         <Card size="lg" variant="elevated" className="m-3">
-          <Text size="lg" className="mb-1">
+          <Heading size="lg" className="mb-1">
             Settings
-          </Text>
-          <Heading size="lg">April 2027</Heading>
+          </Heading>
+          <Text size="md">This screen will include basic user details.</Text>
         </Card>
       </View>
     </SafeAreaView>

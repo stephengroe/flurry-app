@@ -9,10 +9,10 @@ export default function Activity() {
     <SafeAreaView>
       <View>
         <Card size="lg" variant="elevated" className="m-3">
-          <Text size="lg" className="mb-1">
+          <Heading size="lg" className="mb-1">
             Activity
-          </Text>
-          <Heading size="lg">April 2027</Heading>
+          </Heading>
+          <Text size="md">This screen will list recent payments made.</Text>
         </Card>
       </View>
     </SafeAreaView>

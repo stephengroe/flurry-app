@@ -9,10 +9,13 @@ export default function Plan() {
     <SafeAreaView>
       <View>
         <Card size="lg" variant="elevated" className="m-3">
-          <Text size="lg" className="mb-1">
+          <Heading size="lg" className="mb-1">
             Plan
+          </Heading>
+          <Text size="md">
+            This screen will show total debt and let users add, remove, or
+            adjust details.
           </Text>
-          <Heading size="lg">April 2027</Heading>
         </Card>
       </View>
     </SafeAreaView>
