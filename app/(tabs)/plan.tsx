@@ -5,6 +5,7 @@ import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { Debt } from "@/types/Debt";
+import { getFreedomDate } from "@/utils/freedom-date";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
@@ -35,6 +36,21 @@ export default function Plan() {
     }
   };
 
+  const totalInitialValue =
+    pendingDebts.reduce((sum, debt) => {
+      return (sum += debt.initialValue);
+    }, 0) / 100;
+  const totalBalance =
+    pendingDebts.reduce((sum, debt) => {
+      return (sum += debt.balance);
+    }, 0) / 100;
+
+  const today = new Date();
+  const freedomDate = new Date(getFreedomDate(pendingDebts, 100000));
+  const monthsLeft =
+    (freedomDate.getFullYear() - today.getFullYear()) * 12 +
+    (freedomDate.getMonth() - today.getMonth());
+
   useEffect(() => {
     fetchDebts();
   }, []);
@@ -42,29 +58,37 @@ export default function Plan() {
   return (
     <SafeAreaView>
       <ScrollView>
-        <VStack className="m-6 mb-3" space="2xl">
+        <VStack className="m-6 mb-3 gap-4" space="2xl">
           <Heading size="3xl" className="flex-start">
             Plan
           </Heading>
 
-          <Card>
-            <Heading>How does the debt snowball work?</Heading>
-          </Card>
+          <View className="flex-row gap-4 w-full">
+            <Card className="flex-1 items-center">
+              <Text className="font-bold text-2xl text-black">
+                {Math.round((totalBalance / totalInitialValue) * 100)}%
+              </Text>
+              <Text>paid off</Text>
+            </Card>
+            <Card className="flex-1 items-center">
+              <Text className="font-bold text-2xl text-black">
+                {`${Math.floor(monthsLeft / 12)}y ${monthsLeft % 12}m`}
+              </Text>
+              <Text>time left</Text>
+            </Card>
+          </View>
 
           <View className="flex-row gap-4 w-full">
             <Card className="flex-1 items-center">
               <Text className="font-bold text-2xl text-black">
-                {(
-                  pendingDebts.reduce((sum, debt) => {
-                    return (sum += debt.balance);
-                  }, 0) / 100
-                ).toLocaleString("en-US", {
+                {totalBalance.toLocaleString("en-US", {
                   style: "currency",
                   currency: "USD",
                 })}
               </Text>
-              <Text>total debt</Text>
+              <Text>total balance</Text>
             </Card>
+
             <Card className="flex-1 items-center">
               <Text className="font-bold text-2xl text-black">
                 {(
