@@ -1,9 +1,22 @@
+import { PaymentCard } from "@/components/payment-card";
 import { Heading } from "@/components/ui/heading";
 import { VStack } from "@/components/ui/vstack";
+import { useDebtStore } from "@/stores/useDebtStore";
+import { usePaymentStore } from "@/stores/usePaymentStore";
+import { Debt } from "@/types/Debt";
+import { useEffect } from "react";
 import { ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Payments() {
+  const { payments, loadPayments } = usePaymentStore();
+  const { debts, loadDebts } = useDebtStore();
+
+  useEffect(() => {
+    loadPayments();
+    loadDebts();
+  }, [loadPayments, loadDebts]);
+
   return (
     <SafeAreaView>
       <ScrollView>
@@ -11,6 +24,20 @@ export default function Payments() {
           <Heading size="3xl" className="flex-start">
             Payments
           </Heading>
+        </VStack>
+        <VStack>
+          {payments.length > 0 && (
+            <VStack space="sm">
+              {payments.map((payment) => {
+                const debt: Debt | undefined = debts.find(
+                  (d) => d.id === payment.debtId
+                );
+                return (
+                  <PaymentCard key={payment.id} payment={payment} debt={debt} />
+                );
+              })}
+            </VStack>
+          )}
         </VStack>
       </ScrollView>
     </SafeAreaView>
