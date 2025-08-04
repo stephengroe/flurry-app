@@ -1,4 +1,3 @@
-import { DebtForm } from "@/components/debt-form";
 import {
   AlertDialog,
   AlertDialogBackdrop,
@@ -9,7 +8,13 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button, ButtonText } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import {
+  FormControl,
+  FormControlLabel,
+  FormControlLabelText,
+} from "@/components/ui/form-control";
 import { Heading } from "@/components/ui/heading";
+import { Input, InputField } from "@/components/ui/input";
 import { Progress, ProgressFilledTrack } from "@/components/ui/progress";
 import { Spinner } from "@/components/ui/spinner";
 import { Text } from "@/components/ui/text";
@@ -47,6 +52,17 @@ export default function DebtModal() {
 
   const [showAlertDialog, setShowAlertDialog] = useState(false);
   const handleClose = () => setShowAlertDialog(false);
+
+  const handleChange = async (key: keyof Debt, value: string) => {
+    const updatedDebt = {
+      ...activeDebt,
+      [key]:
+        key === "initialValue" || key === "minPayment" || key === "interest"
+          ? Number.parseFloat(value) || 0
+          : value,
+    };
+    setDebts(debts.map((d) => (d.id === activeDebt.id ? updatedDebt : d)));
+  };
 
   useEffect(() => {
     loadDebts();
@@ -95,7 +111,84 @@ export default function DebtModal() {
           )}
 
           <Card>
-            <DebtForm debt={activeDebt} />
+            <Card>
+              <VStack space="xl">
+                <FormControl>
+                  <FormControlLabel>
+                    <FormControlLabelText className="text-lg font-bold text-black">
+                      Initial value
+                    </FormControlLabelText>
+                  </FormControlLabel>
+                  <Input>
+                    <InputField
+                      keyboardType="numeric"
+                      size="xl"
+                      className="text-xl"
+                      value={(activeDebt.initialValue / 100).toLocaleString()}
+                      onChangeText={(value) =>
+                        handleChange("initialValue", value)
+                      }
+                    />
+                  </Input>
+                </FormControl>
+
+                <FormControl>
+                  <FormControlLabel>
+                    <FormControlLabelText className="text-lg font-bold text-black">
+                      Minimum payment
+                    </FormControlLabelText>
+                  </FormControlLabel>
+                  <Input>
+                    <InputField
+                      keyboardType="numeric"
+                      size="xl"
+                      className="text-xl"
+                      value={(activeDebt.minPayment / 100).toLocaleString()}
+                      onChangeText={(value) =>
+                        handleChange("minPayment", value)
+                      }
+                    />
+                  </Input>
+                </FormControl>
+
+                <FormControl>
+                  <FormControlLabel>
+                    <FormControlLabelText className="text-lg font-bold text-black">
+                      Debt type
+                    </FormControlLabelText>
+                  </FormControlLabel>
+                  <Input>
+                    <InputField
+                      size="xl"
+                      className="text-xl"
+                      value={activeDebt.type}
+                      onChangeText={(value) => handleChange("type", value)}
+                    />
+                  </Input>
+                </FormControl>
+
+                <FormControl>
+                  <FormControlLabel>
+                    <FormControlLabelText className="text-lg font-bold text-black">
+                      Interest rate (optional)
+                    </FormControlLabelText>
+                  </FormControlLabel>
+                  <Input>
+                    <InputField
+                      keyboardType="numeric"
+                      size="xl"
+                      className="text-xl"
+                      value={
+                        activeDebt.interest !== undefined
+                          ? (activeDebt.interest / 100).toLocaleString()
+                          : "0.00"
+                      }
+                      onChangeText={(value) => handleChange("interest", value)}
+                    />
+                  </Input>
+                </FormControl>
+              </VStack>
+            </Card>
           </Card>
 
           {activeDebt.id !== "" && (
