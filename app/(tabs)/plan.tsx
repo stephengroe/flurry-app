@@ -4,37 +4,25 @@ import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
-import { Debt } from "@/types/Debt";
+import { useDebtStore } from "@/stores/useDebtStore";
 import { getFreedomDate } from "@/utils/freedom-date";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Plan() {
-  const [pendingDebts, setPendingDebts] = useState<Debt[]>([]);
-  const [paidDebts, setPaidDebts] = useState<Debt[]>([]);
+  const { debts, loadDebts } = useDebtStore();
 
-  const fetchDebts = async () => {
-    try {
-      const data = await AsyncStorage.getItem("debts");
-      if (data !== null) {
-        const fetchedDebts: Debt[] = JSON.parse(data);
-        const adjustedPendingDebts = fetchedDebts
-          .filter((debt) => debt.balance > 0)
-          .sort((a, b) => a.balance - b.balance);
-        const adjustedPaidDebts = fetchedDebts.filter(
-          (debt) => debt.balance === 0
-        );
+  const pendingDebts = useMemo(() => {
+    return debts
+      .filter((debt) => debt.balance > 0)
+      .sort((a, b) => a.balance - b.balance);
+  }, [debts]);
 
-        setPaidDebts(adjustedPaidDebts);
-        setPendingDebts(adjustedPendingDebts);
-      }
-    } catch (e) {
-      console.error("Error fetching user:", e);
-    }
-  };
+  const paidDebts = useMemo(() => {
+    return debts.filter((debt) => debt.balance === 0);
+  }, [debts]);
 
   const totalInitialValue =
     pendingDebts.reduce((sum, debt) => {
@@ -52,8 +40,8 @@ export default function Plan() {
     (freedomDate.getMonth() - today.getMonth());
 
   useEffect(() => {
-    fetchDebts();
-  }, []);
+    loadDebts();
+  }, [loadDebts]);
 
   return (
     <SafeAreaView>

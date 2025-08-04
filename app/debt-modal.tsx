@@ -14,66 +14,45 @@ import { Progress, ProgressFilledTrack } from "@/components/ui/progress";
 import { Spinner } from "@/components/ui/spinner";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
+import { useDebtStore } from "@/stores/useDebtStore";
 import { Debt } from "@/types/Debt";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ScrollView, View } from "react-native";
 
 export default function DebtModal() {
-  const defaultDebt: Debt = {
-    id: "",
-    name: "New debt",
-    type: "",
-    initialValue: 0,
-    target: false,
-    balance: 0,
-    minPayment: 0,
-    interest: 0,
+  const { id } = useLocalSearchParams();
+
+  const { debts, loadDebts, setDebts } = useDebtStore();
+  const activeDebt = useMemo(() => {
+    const defaultDebt: Debt = {
+      id: "",
+      name: "New debt",
+      type: "",
+      initialValue: 0,
+      target: false,
+      balance: 0,
+      minPayment: 0,
+      interest: 0,
+    };
+
+    let foundDebt = debts.find((d) => d.id === id);
+    return foundDebt ?? defaultDebt;
+  }, [debts, id]);
+
+  const handleDelete = () => {
+    const updatedDebts = debts.filter((d) => d.id !== id);
+    setDebts(updatedDebts);
   };
 
-  const { id } = useLocalSearchParams();
-  const [debt, setDebt] = useState<Debt | null>(null);
   const [showAlertDialog, setShowAlertDialog] = useState(false);
-
   const handleClose = () => setShowAlertDialog(false);
 
-  const handleDelete = async () => {
-    try {
-      const data = await AsyncStorage.getItem("debts");
-      if (data !== null) {
-        const fetchedDebts: Debt[] = JSON.parse(data);
-        const adjustedDebts = fetchedDebts.filter((d) => d.id !== id);
-        AsyncStorage.setItem("debts", JSON.stringify(adjustedDebts));
-        handleClose();
-        router.back();
-      }
-    } catch (e) {
-      console.error("Error deleting debt:", e);
-    }
-  };
-
   useEffect(() => {
-    const fetchDebt = async () => {
-      try {
-        const data = await AsyncStorage.getItem("debts");
-        if (data !== null) {
-          const fetchedDebts: Debt[] = JSON.parse(data);
-          const adjustedDebt = fetchedDebts.find((d) => d.id === id);
-          if (adjustedDebt === undefined) {
-            setDebt(defaultDebt);
-          } else {
-            setDebt(adjustedDebt);
-          }
-        }
-      } catch (e) {
-        console.error("Error fetching debt:", e);
-      }
-    };
-    fetchDebt();
-  });
+    loadDebts();
+  }, [loadDebts]);
 
-  if (!debt) return <Spinner size="large" />;
+  if (!activeDebt) return <Spinner size="large" />;
 
   return (
     <>
@@ -82,21 +61,25 @@ export default function DebtModal() {
           <ButtonText className="text-xl">Done</ButtonText>
         </Button>
         <VStack space="xl">
-          <Heading className="text-3xl">{debt.name}</Heading>
+          <Heading className="text-3xl">{activeDebt.name}</Heading>
 
-          {debt.id !== "" && (
+          {activeDebt.id !== "" && (
             <Card className="p-6 gap-4">
               <Heading>Progress</Heading>
               <Progress
                 size="lg"
-                value={100 - (debt.balance / debt.initialValue) * 100}
+                value={
+                  100 - (activeDebt.balance / activeDebt.initialValue) * 100
+                }
               >
                 <ProgressFilledTrack></ProgressFilledTrack>
               </Progress>
               <View className="flex-row gap-4 w-full items-center">
                 <Card className="flex-1 items-center">
                   <Text className="font-bold text-3xl text-black">
-                    {Math.floor(100 - (debt.balance / debt.initialValue) * 100)}
+                    {Math.floor(
+                      100 - (activeDebt.balance / activeDebt.initialValue) * 100
+                    )}
                     %
                   </Text>
                   <Text>paid off</Text>
@@ -112,25 +95,25 @@ export default function DebtModal() {
           )}
 
           <Card>
-            <DebtForm debt={debt} />
+            <DebtForm debt={activeDebt} />
           </Card>
 
-          {debt.id !== "" && (
+          {activeDebt.id !== "" && (
             <>
               <Card
-                className={`p-6 gap-4 ${debt.balance === 0 ? "bg-green-100" : debt.target ? "bg-blue-100" : "bg-white"}`}
+                className={`p-6 gap-4 ${activeDebt.balance === 0 ? "bg-green-100" : activeDebt.target ? "bg-blue-100" : "bg-white"}`}
               >
                 <Heading>
-                  {debt.balance === 0
+                  {activeDebt.balance === 0
                     ? "Paid"
-                    : debt.target
+                    : activeDebt.target
                       ? "Target"
                       : "Pending"}
                 </Heading>
                 <Text>
-                  {debt.balance === 0
+                  {activeDebt.balance === 0
                     ? "Congratulations! This debt has been paid off."
-                    : debt.target
+                    : activeDebt.target
                       ? "Each month, pay your minimum payment and your extra amount. If you want to move faster, contribute to this debt."
                       : "Continue paying the minimum payments each month. It's the fastest way to build momentum!"}
                 </Text>

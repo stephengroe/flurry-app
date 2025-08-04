@@ -13,13 +13,13 @@ import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { generateSampleData } from "@/scripts/generateSampleData";
-import { Debt } from "@/types/Debt";
+import { useDebtStore } from "@/stores/useDebtStore";
 import { User } from "@/types/User";
 import { getFreedomDate } from "@/utils/freedom-date";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Link } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -34,7 +34,10 @@ export default function Index() {
   const [user, setUser] = useState<User>(defaultUser);
   const [defaultData, setDefaultData] = useState(true);
   const [showAlertDialog, setShowAlertDialog] = useState(false);
-  const [debts, setDebts] = useState<Debt[]>([]);
+  const { debts, loadDebts } = useDebtStore();
+  const filteredDebts = useMemo(() => {
+    return debts.filter((d) => d.balance > 0);
+  }, [debts]);
 
   const handleClose = () => setShowAlertDialog(false);
 
@@ -48,21 +51,6 @@ export default function Index() {
       }
     } catch (e) {
       console.error("Error fetching user:", e);
-    }
-  };
-
-  const fetchDebts = async () => {
-    try {
-      const data = await AsyncStorage.getItem("debts");
-      if (data !== null) {
-        const fetchedDebts: Debt[] = JSON.parse(data);
-        const adjustedDebts = fetchedDebts
-          .filter((debt) => debt.balance > 0)
-          .sort((a, b) => a.balance - b.balance);
-        setDebts(adjustedDebts);
-      }
-    } catch (e) {
-      console.error("Error fetching debt:", e);
     }
   };
 
@@ -87,8 +75,8 @@ export default function Index() {
 
   useEffect(() => {
     fetchUser();
-    fetchDebts();
-  }, []);
+    loadDebts();
+  }, [loadDebts]);
 
   if (!debts) return null;
 
@@ -114,7 +102,7 @@ export default function Index() {
               <View>
                 <Text className="text-xl font-bold text-black">
                   {new Date(
-                    getFreedomDate(debts, user.extraPayment)
+                    getFreedomDate(filteredDebts, user.extraPayment)
                   ).toLocaleDateString("en-US", {
                     month: "long",
                     year: "numeric",
@@ -140,9 +128,9 @@ export default function Index() {
             <Heading size="xl" className="m-6">
               Debts
             </Heading>
-            {debts.length > 0 ? (
+            {filteredDebts.length > 0 ? (
               <VStack space="sm">
-                {debts.map((debt) => {
+                {filteredDebts.map((debt) => {
                   return (
                     <DebtCard key={debt.id} debt={debt} progress={false} />
                   );
@@ -150,7 +138,7 @@ export default function Index() {
               </VStack>
             ) : (
               <View className="gap-6 p-6 mx-6 items-center">
-                <Text>
+                <Text className="text-center">
                   No data yet. Try loading sample data to get started.
                 </Text>
                 <Button onPress={handleSampleData}>
