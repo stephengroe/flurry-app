@@ -89,17 +89,6 @@ export default function Index() {
                 <Text className="text-lg center">Debt freedom date</Text>
               </View>
             </Card>
-            <Card
-              size="lg"
-              variant="elevated"
-              className="flex-row items-center gap-4"
-            >
-              <Ionicons name="flame-outline" size={24} color="grey" />
-              <View>
-                <Text className="text-xl font-bold text-black">17 months</Text>
-                <Text className="text-lg center">Payment streak</Text>
-              </View>
-            </Card>
           </VStack>
 
           <View>
