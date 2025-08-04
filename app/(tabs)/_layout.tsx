@@ -24,13 +24,13 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="activity"
+        name="payments"
         options={{
-          title: "Activity",
+          title: "Payments",
           headerShown: false,
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
-              name={focused ? "time" : "time-outline"}
+              name={focused ? "cash" : "cash-outline"}
               size={24}
               color={focused ? "black" : "grey"}
             />
@@ -44,7 +44,7 @@ export default function TabLayout() {
           headerShown: false,
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
-              name={focused ? "calendar-clear" : "calendar-clear-outline"}
+              name={focused ? "wallet" : "wallet-outline"}
               size={24}
               color={focused ? "black" : "grey"}
             />
