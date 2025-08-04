@@ -106,13 +106,17 @@ export default function DebtModal() {
             </View>
           </Card>
           <Card
-            className={`p-6 gap-4 ${debt.target ? "bg-blue-100" : "bg-white"}`}
+            className={`p-6 gap-4 ${debt.balance === 0 ? "bg-green-100" : debt.target ? "bg-blue-100" : "bg-white"}`}
           >
-            <Heading>{debt.target ? "Target" : "Pending"}</Heading>
+            <Heading>
+              {debt.balance === 0 ? "Paid" : debt.target ? "Target" : "Pending"}
+            </Heading>
             <Text>
-              {debt.target
-                ? "Each month, pay your minimum payment and your extra amount. If you want to move faster, contribute to this debt."
-                : "Continue paying the minimum payments each month. It's the fastest way to build momentum!"}
+              {debt.balance === 0
+                ? "Congratulations! This debt has been paid off."
+                : debt.target
+                  ? "Each month, pay your minimum payment and your extra amount. If you want to move faster, contribute to this debt."
+                  : "Continue paying the minimum payments each month. It's the fastest way to build momentum!"}
             </Text>
           </Card>
 
