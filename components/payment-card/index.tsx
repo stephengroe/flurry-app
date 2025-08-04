@@ -26,17 +26,23 @@ export function PaymentCard({
   return (
     <Pressable
       // onPress={handlePress}
-      className={"p-6 gap-4  text-black bg-white"}
+      className={"px-6 py-4 gap-1  text-black bg-white"}
     >
       <View className="flex-row justify-between">
         <View>
           <View className="flex-row gap-2 items-center">
-            <Heading size="md">{debt?.name}</Heading>
+            <Heading size="md">{debt ? debt.name : `No category`}</Heading>
           </View>
-          <Text>{payment.date.toLocaleString("en-US")}</Text>
+          <Text>
+            {new Date(payment.date).toLocaleString("en-US", {
+              year: "2-digit",
+              month: "2-digit",
+              day: "2-digit",
+            })}
+          </Text>
         </View>
         <View className="gap-2 items-end flex-col">
-          <Text size="2xl" className="font-bold text-black">
+          <Text size="xl" className="font-bold text-black">
             {(payment.amount / 100).toLocaleString("en-US", {
               style: "currency",
               currency: "USD",
