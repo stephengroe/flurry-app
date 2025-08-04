@@ -63,14 +63,15 @@ export default function Plan() {
             Plan
           </Heading>
 
-          <View className="flex-row gap-4 w-full">
-            <Card className="flex-1 items-center">
+          <View className="flex-row w-full gap-4">
+            <Card className="items-center flex-1">
               <Text className="font-bold text-2xl text-black">
                 {Math.round((totalBalance / totalInitialValue) * 100)}%
               </Text>
               <Text>paid off</Text>
             </Card>
-            <Card className="flex-1 items-center">
+
+            <Card className="items-center flex-1">
               <Text className="font-bold text-2xl text-black">
                 {`${Math.floor(monthsLeft / 12)}y ${monthsLeft % 12}m`}
               </Text>
@@ -78,8 +79,8 @@ export default function Plan() {
             </Card>
           </View>
 
-          <View className="flex-row gap-4 w-full">
-            <Card className="flex-1 items-center">
+          <View className="flex-row w-full gap-4">
+            <Card className="items-center flex-1">
               <Text className="font-bold text-2xl text-black">
                 {totalBalance.toLocaleString("en-US", {
                   style: "currency",
@@ -89,12 +90,14 @@ export default function Plan() {
               <Text>total balance</Text>
             </Card>
 
-            <Card className="flex-1 items-center">
+            <Card className="items-center flex-1">
               <Text className="font-bold text-2xl text-black">
                 {(
                   pendingDebts.reduce((sum, debt) => {
                     return (sum += debt.minPayment);
-                  }, 0) / 100
+                  }, 0) /
+                    100 +
+                  1000
                 ).toLocaleString("en-US", {
                   style: "currency",
                   currency: "USD",

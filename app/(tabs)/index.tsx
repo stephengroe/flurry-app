@@ -28,6 +28,7 @@ export default function Index() {
     id: "0",
     name: "User",
     joinDate: new Date().toISOString(),
+    extraPayment: 0,
   };
 
   const [user, setUser] = useState<User>(defaultUser);
@@ -112,10 +113,12 @@ export default function Index() {
               <Ionicons name="today-outline" size={24} color="grey" />
               <View>
                 <Text className="text-xl font-bold text-black">
-                  {new Date(getFreedomDate(debts, 10000)).toLocaleDateString(
-                    "en-US",
-                    { month: "long", year: "numeric" }
-                  )}
+                  {new Date(
+                    getFreedomDate(debts, user.extraPayment)
+                  ).toLocaleDateString("en-US", {
+                    month: "long",
+                    year: "numeric",
+                  })}
                 </Text>
                 <Text className="text-lg center">Debt freedom date</Text>
               </View>
