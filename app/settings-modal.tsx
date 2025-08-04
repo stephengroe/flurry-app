@@ -7,6 +7,7 @@ import {
   AlertDialogHeader,
 } from "@/components/ui/alert-dialog";
 import { Button, ButtonText } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
@@ -83,24 +84,43 @@ export default function Settings() {
   return (
     <>
       <SafeAreaView className="p-6 relative">
-        <View>
-          <Button variant="link" onPress={router.back} className="justify-end">
-            <ButtonText className="text-xl">Done</ButtonText>
-          </Button>
-          <VStack space="xl">
-            <Heading className="text-3xl">Settings</Heading>
-          </VStack>
-        </View>
-      </SafeAreaView>
+        <VStack space="xl">
+          <View>
+            <Button
+              variant="link"
+              onPress={router.back}
+              className="justify-end"
+            >
+              <ButtonText className="text-xl">Done</ButtonText>
+            </Button>
+            <VStack space="xl">
+              <Heading className="text-3xl">Settings</Heading>
+            </VStack>
+          </View>
 
-      <View className="m-6 gap-3">
-        <Button onPress={handleSampleData}>
-          <ButtonText>Load sample data</ButtonText>
-        </Button>
-        <Button onPress={handleClearData} action="negative">
-          <ButtonText>Clear all data</ButtonText>
-        </Button>
-      </View>
+          <Card className="align-center p-8">
+            <Heading size="xl" className="text-center">
+              {user.name}
+            </Heading>
+            <Text size="md" className="text-center">
+              Member since{" "}
+              {new Date(user.joinDate).toLocaleDateString("en-US", {
+                month: "long",
+                year: "numeric",
+              })}
+            </Text>
+          </Card>
+
+          <View className="gap-3">
+            <Button onPress={handleSampleData}>
+              <ButtonText>Load sample data</ButtonText>
+            </Button>
+            <Button onPress={handleClearData} action="negative">
+              <ButtonText>Clear all data</ButtonText>
+            </Button>
+          </View>
+        </VStack>
+      </SafeAreaView>
 
       <AlertDialog isOpen={showAlertDialog} onClose={handleClose} size="md">
         <AlertDialogBackdrop />
