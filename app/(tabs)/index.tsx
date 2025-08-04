@@ -60,7 +60,7 @@ export default function Index() {
         setDebts(adjustedDebts);
       }
     } catch (e) {
-      console.error("Error fetching user:", e);
+      console.error("Error fetching debt:", e);
     }
   };
 
@@ -90,6 +90,8 @@ export default function Index() {
 
   return (
     <SafeAreaView>
+      <Link href="../debt-modal">Open modal</Link>
+
       <ScrollView>
         <VStack className="m-6 mb-3" space="lg">
           <View className="flex-row justify-between items-center">
