@@ -16,28 +16,15 @@ import { useUserStore } from "@/stores/useUserStore";
 import { Debt } from "@/types/Debt";
 import { getFreedomDate } from "@/utils/freedom-date";
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { Alert, ScrollView, View } from "react-native";
 
 export default function DebtModal() {
   const { id } = useLocalSearchParams();
   const { user } = useUserStore();
-  const { debts, loadDebts, setDebts } = useDebtStore();
-  const activeDebt = useMemo(() => {
-    const defaultDebt: Debt = {
-      id: "",
-      name: "New debt",
-      type: "",
-      initialValue: 0,
-      target: false,
-      balance: 0,
-      minPayment: 0,
-      interest: 0,
-    };
+  const { debts, loadDebts, setDebts, saveDebts } = useDebtStore();
 
-    let foundDebt = debts.find((d) => d.id === id);
-    return foundDebt ?? defaultDebt;
-  }, [debts, id]);
+  const [activeDebt, setActiveDebt] = useState<Debt | null>(null);
 
   const deleteDebt = () => {
     const updatedDebts = debts.filter((d) => d.id !== id);
@@ -46,19 +33,26 @@ export default function DebtModal() {
   };
 
   const handleChange = async (key: keyof Debt, value: string) => {
+    if (!activeDebt) return;
+
     const updatedDebt = {
       ...activeDebt,
       [key]:
-        key === "initialValue" || key === "minPayment" || key === "interest"
-          ? Number.parseFloat(value) || 0
+        key === "initialValue" ||
+        key === "minPayment" ||
+        key === "interest" ||
+        key === "balance"
+          ? // Workaround to convert string to number
+            Math.round(Number.parseFloat(value) * 100) || 0
           : value,
     };
-    setDebts(debts.map((d) => (d.id === activeDebt.id ? updatedDebt : d)));
+    setActiveDebt(updatedDebt);
+    setDebts(debts.map((d) => (d.id === activeDebt.id ? activeDebt : d)));
   };
 
   const handleDelete = () => {
     Alert.alert(
-      `Delete ${activeDebt.name ?? "this debt"}?`,
+      `Delete ${activeDebt ? activeDebt.name : "this debt"}?`,
       "This will delete this debt and all its data. This cannot be undone.",
       [
         {
@@ -84,18 +78,43 @@ export default function DebtModal() {
     }
   };
 
+  const handleSave = async () => {
+    await saveDebts(debts);
+    console.log("saved!");
+    router.back();
+  };
+
   useEffect(() => {
-    loadDebts();
-  }, [loadDebts]);
+    loadDebts().then(() => {
+      const defaultDebt: Debt = {
+        id: "",
+        name: "New debt",
+        type: "",
+        initialValue: 0,
+        target: false,
+        balance: 0,
+        minPayment: 0,
+        interest: 0,
+      };
+      const newDebt = debts.find((d) => d.id === id) ?? defaultDebt;
+      setActiveDebt(newDebt);
+    });
+  }, [loadDebts, id]);
 
   if (!activeDebt) return <Spinner size="large" />;
 
   return (
     <>
-      <ScrollView className="p-6 relative">
-        <Button variant="link" onPress={router.back} className="justify-end">
-          <ButtonText className="text-xl">Done</ButtonText>
-        </Button>
+      <ScrollView className="p-6 pt-4">
+        <View className="flex-row w-full justify-between items-center mb-4">
+          <Button variant="link" onPress={router.back} className="">
+            <ButtonText className="text-xl font-normal">Cancel</ButtonText>
+          </Button>
+
+          <Button variant="link" onPress={handleSave} className="">
+            <ButtonText className="text-xl">Save</ButtonText>
+          </Button>
+        </View>
         <VStack space="xl" className="mb-12">
           <Heading className="text-3xl">{activeDebt.name}</Heading>
 
@@ -141,6 +160,25 @@ export default function DebtModal() {
                 <FormControl>
                   <FormControlLabel>
                     <FormControlLabelText className="text-lg font-bold text-black">
+                      Balance
+                    </FormControlLabelText>
+                  </FormControlLabel>
+                  <Input>
+                    <InputField
+                      keyboardType="numeric"
+                      size="xl"
+                      className="text-xl"
+                      value={String(activeDebt.balance / 100)}
+                      onChangeText={(value: string) =>
+                        handleChange("balance", value)
+                      }
+                    />
+                  </Input>
+                </FormControl>
+
+                <FormControl>
+                  <FormControlLabel>
+                    <FormControlLabelText className="text-lg font-bold text-black">
                       Initial value
                     </FormControlLabelText>
                   </FormControlLabel>
@@ -149,8 +187,8 @@ export default function DebtModal() {
                       keyboardType="numeric"
                       size="xl"
                       className="text-xl"
-                      value={(activeDebt.initialValue / 100).toLocaleString()}
-                      onChangeText={(value) =>
+                      value={String(activeDebt.initialValue / 100)}
+                      onChangeText={(value: string) =>
                         handleChange("initialValue", value)
                       }
                     />
@@ -168,7 +206,7 @@ export default function DebtModal() {
                       keyboardType="numeric"
                       size="xl"
                       className="text-xl"
-                      value={(activeDebt.minPayment / 100).toLocaleString()}
+                      value={String(activeDebt.minPayment / 100)}
                       onChangeText={(value) =>
                         handleChange("minPayment", value)
                       }
@@ -204,8 +242,8 @@ export default function DebtModal() {
                       size="xl"
                       className="text-xl"
                       value={
-                        activeDebt.interest !== undefined
-                          ? (activeDebt.interest / 100).toLocaleString()
+                        activeDebt.interest
+                          ? String(activeDebt.interest / 100)
                           : "0.00"
                       }
                       onChangeText={(value) => handleChange("interest", value)}

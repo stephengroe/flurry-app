@@ -6,6 +6,7 @@ type DebtState = {
   debts: Debt[];
   loadDebts: () => Promise<void>;
   setDebts: (debts: Debt[]) => void;
+  saveDebts: (debts: Debt[]) => void;
 };
 
 export const useDebtStore = create<DebtState>((set) => ({
@@ -34,6 +35,13 @@ export const useDebtStore = create<DebtState>((set) => ({
       }
     } catch (e) {
       console.error("Error fetching debt:", e);
+    }
+  },
+  saveDebts: async (debts) => {
+    try {
+      await AsyncStorage.setItem("debts", JSON.stringify(debts));
+    } catch (e) {
+      console.error("Error saving debt:", e);
     }
   },
 }));

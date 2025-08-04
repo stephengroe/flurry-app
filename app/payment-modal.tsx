@@ -11,7 +11,6 @@ import { Spinner } from "@/components/ui/spinner";
 import { VStack } from "@/components/ui/vstack";
 import { useDebtStore } from "@/stores/useDebtStore";
 import { usePaymentStore } from "@/stores/usePaymentStore";
-import { useUserStore } from "@/stores/useUserStore";
 import { Debt } from "@/types/Debt";
 import { Payment } from "@/types/Payment";
 import { router, useLocalSearchParams } from "expo-router";
@@ -20,7 +19,6 @@ import { Alert, ScrollView, View } from "react-native";
 
 export default function PaymentModal() {
   const { id, debtId } = useLocalSearchParams();
-  const { user } = useUserStore();
   const { payments, loadPayments, setPayments, savePayments } =
     usePaymentStore();
   const { debts, loadDebts } = useDebtStore();
@@ -63,7 +61,8 @@ export default function PaymentModal() {
       ...activePayment,
       [key]:
         key === "minPayment" || key === "amount" || key === "date"
-          ? Number.parseFloat(value) || 0
+          ? // Workaround to convert string to number
+            Math.round(Number.parseFloat(value) * 100) || 0
           : value,
     };
     setPayments(
