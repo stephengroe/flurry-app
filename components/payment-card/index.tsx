@@ -16,6 +16,13 @@ export function PaymentCard({
   //   router.navigate({ pathname: "../payment-modal", params: { id: payment.id } });
   // };
 
+  const status =
+    payment.amount < payment.minPayment
+      ? "below"
+      : payment.amount > payment.minPayment + 100
+        ? "above"
+        : "minimum";
+
   return (
     <Pressable
       // onPress={handlePress}
@@ -35,8 +42,13 @@ export function PaymentCard({
               currency: "USD",
             })}
           </Text>
-          <Badge size="md" variant="solid" action="success" className="w-auto">
-            <BadgeText>On track</BadgeText>
+          <Badge
+            size="md"
+            variant="solid"
+            action={status === "below" ? "error" : "success"}
+            className="w-auto"
+          >
+            <BadgeText>{status}</BadgeText>
           </Badge>
         </View>
       </View>
