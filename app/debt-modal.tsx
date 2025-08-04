@@ -21,28 +21,22 @@ import { useEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
 
 export default function DebtModal() {
+  const defaultDebt: Debt = {
+    id: "",
+    name: "New debt",
+    type: "",
+    initialValue: 0,
+    target: false,
+    balance: 0,
+    minPayment: 0,
+    interest: 0,
+  };
+
   const { id } = useLocalSearchParams();
   const [debt, setDebt] = useState<Debt | null>(null);
   const [showAlertDialog, setShowAlertDialog] = useState(false);
 
   const handleClose = () => setShowAlertDialog(false);
-
-  const fetchDebt = async () => {
-    try {
-      const data = await AsyncStorage.getItem("debts");
-      if (data !== null) {
-        const fetchedDebts: Debt[] = JSON.parse(data);
-        const adjustedDebt = fetchedDebts.find((d) => d.id === id);
-        if (adjustedDebt === undefined) {
-          setDebt(null);
-        } else {
-          setDebt(adjustedDebt);
-        }
-      }
-    } catch (e) {
-      console.error("Error fetching debt:", e);
-    }
-  };
 
   const handleDelete = async () => {
     try {
@@ -60,6 +54,22 @@ export default function DebtModal() {
   };
 
   useEffect(() => {
+    const fetchDebt = async () => {
+      try {
+        const data = await AsyncStorage.getItem("debts");
+        if (data !== null) {
+          const fetchedDebts: Debt[] = JSON.parse(data);
+          const adjustedDebt = fetchedDebts.find((d) => d.id === id);
+          if (adjustedDebt === undefined) {
+            setDebt(defaultDebt);
+          } else {
+            setDebt(adjustedDebt);
+          }
+        }
+      } catch (e) {
+        console.error("Error fetching debt:", e);
+      }
+    };
     fetchDebt();
   });
 
@@ -74,60 +84,70 @@ export default function DebtModal() {
         <VStack space="xl">
           <Heading className="text-3xl">{debt.name}</Heading>
 
-          <Card className="p-6 gap-4">
-            <Heading>Progress</Heading>
-            <Progress
-              size="lg"
-              value={100 - (debt.balance / debt.initialValue) * 100}
-            >
-              <ProgressFilledTrack></ProgressFilledTrack>
-            </Progress>
-
-            <View className="flex-row gap-4 w-full items-center">
-              <Card className="flex-1 items-center">
-                <Text className="font-bold text-3xl text-black">
-                  {Math.floor(100 - (debt.balance / debt.initialValue) * 100)}%
-                </Text>
-                <Text>paid off</Text>
-              </Card>
-              <Card className="flex-1 items-center">
-                <Text className="font-bold text-3xl text-black text-center">
-                  Nov. 2027
-                </Text>
-                <Text>freedom date</Text>
-              </Card>
-            </View>
-          </Card>
+          {debt.id !== "" && (
+            <Card className="p-6 gap-4">
+              <Heading>Progress</Heading>
+              <Progress
+                size="lg"
+                value={100 - (debt.balance / debt.initialValue) * 100}
+              >
+                <ProgressFilledTrack></ProgressFilledTrack>
+              </Progress>
+              <View className="flex-row gap-4 w-full items-center">
+                <Card className="flex-1 items-center">
+                  <Text className="font-bold text-3xl text-black">
+                    {Math.floor(100 - (debt.balance / debt.initialValue) * 100)}
+                    %
+                  </Text>
+                  <Text>paid off</Text>
+                </Card>
+                <Card className="flex-1 items-center">
+                  <Text className="font-bold text-3xl text-black text-center">
+                    Nov. 2027
+                  </Text>
+                  <Text>freedom date</Text>
+                </Card>
+              </View>
+            </Card>
+          )}
 
           <Card>
             <DebtForm debt={debt} />
           </Card>
 
-          <Card
-            className={`p-6 gap-4 ${debt.balance === 0 ? "bg-green-100" : debt.target ? "bg-blue-100" : "bg-white"}`}
-          >
-            <Heading>
-              {debt.balance === 0 ? "Paid" : debt.target ? "Target" : "Pending"}
-            </Heading>
-            <Text>
-              {debt.balance === 0
-                ? "Congratulations! This debt has been paid off."
-                : debt.target
-                  ? "Each month, pay your minimum payment and your extra amount. If you want to move faster, contribute to this debt."
-                  : "Continue paying the minimum payments each month. It's the fastest way to build momentum!"}
-            </Text>
-          </Card>
+          {debt.id !== "" && (
+            <>
+              <Card
+                className={`p-6 gap-4 ${debt.balance === 0 ? "bg-green-100" : debt.target ? "bg-blue-100" : "bg-white"}`}
+              >
+                <Heading>
+                  {debt.balance === 0
+                    ? "Paid"
+                    : debt.target
+                      ? "Target"
+                      : "Pending"}
+                </Heading>
+                <Text>
+                  {debt.balance === 0
+                    ? "Congratulations! This debt has been paid off."
+                    : debt.target
+                      ? "Each month, pay your minimum payment and your extra amount. If you want to move faster, contribute to this debt."
+                      : "Continue paying the minimum payments each month. It's the fastest way to build momentum!"}
+                </Text>
+              </Card>
 
-          <VStack space="md">
-            <Button size="lg">
-              <ButtonText>Log payment</ButtonText>
-            </Button>
-            <Button size="lg" action="negative">
-              <ButtonText onPress={() => console.log("delete attempt")}>
-                Delete debt
-              </ButtonText>
-            </Button>
-          </VStack>
+              <VStack space="md">
+                <Button size="lg">
+                  <ButtonText>Log payment</ButtonText>
+                </Button>
+                <Button size="lg" action="negative">
+                  <ButtonText onPress={() => console.log("delete attempt")}>
+                    Delete debt
+                  </ButtonText>
+                </Button>
+              </VStack>
+            </>
+          )}
         </VStack>
       </ScrollView>
       <AlertDialog isOpen={showAlertDialog} onClose={handleClose} size="md">

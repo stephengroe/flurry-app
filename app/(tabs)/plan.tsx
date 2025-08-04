@@ -6,6 +6,7 @@ import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { Debt } from "@/models/Debt";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -96,7 +97,11 @@ export default function Plan() {
           {paidDebts.map((debt) => {
             return <DebtCard key={debt.id} debt={debt} progress={true} />;
           })}
-          <Button size="lg" className="">
+          <Button
+            size="lg"
+            className=""
+            onPress={() => router.navigate({ pathname: "../debt-modal" })}
+          >
             <ButtonText className="2xl">Add Debt</ButtonText>
           </Button>
         </VStack>

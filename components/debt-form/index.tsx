@@ -2,7 +2,6 @@ import { Debt } from "@/models/Debt";
 import { debounce } from "@/utils/debounce";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState } from "react";
-import { Text } from "react-native-svg";
 import { Card } from "../ui/card";
 import {
   FormControl,
@@ -45,7 +44,6 @@ export function DebtForm({ debt: initialDebt }: { debt: Debt }) {
 
   return (
     <Card>
-      <Text>{debt.initialValue}</Text>
       <VStack space="xl">
         <FormControl>
           <FormControlLabel>
