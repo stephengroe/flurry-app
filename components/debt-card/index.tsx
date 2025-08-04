@@ -27,7 +27,9 @@ export function DebtCard({
         <View>
           <View className="flex-row gap-2 items-center">
             <Heading size="md">{debt.name}</Heading>
-            {debt.target && <Ionicons name="ribbon" size={16} color="blue" />}
+            {debt.target && (
+              <Ionicons name="rocket-outline" size={16} color="blue" />
+            )}
           </View>
           <Text>{debt.type}</Text>
         </View>
