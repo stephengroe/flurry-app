@@ -7,6 +7,13 @@ export default function RootLayout() {
     <GluestackUIProvider mode="light">
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="debt-modal"
+          options={{
+            presentation: "modal",
+            headerShown: false,
+          }}
+        />
       </Stack>
     </GluestackUIProvider>
   );

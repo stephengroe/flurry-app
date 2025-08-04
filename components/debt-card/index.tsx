@@ -4,8 +4,8 @@ import { Progress, ProgressFilledTrack } from "@/components/ui/progress";
 import { Text } from "@/components/ui/text";
 import { Debt } from "@/models/Debt";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { View } from "react-native";
-import { Card } from "../ui/card";
+import { router } from "expo-router";
+import { Pressable, View } from "react-native";
 
 export function DebtCard({
   debt,
@@ -14,8 +14,13 @@ export function DebtCard({
   debt: Debt;
   progress: boolean;
 }) {
+  const handlePress = () => {
+    router.navigate({ pathname: "../debt-modal", params: { id: debt.id } });
+  };
+
   return (
-    <Card
+    <Pressable
+      onPress={handlePress}
       className={`p-6 gap-4 ${debt.target ? "bg-blue-100" : "bg-white text-black"}`}
     >
       <View className="flex-row justify-between">
@@ -24,7 +29,6 @@ export function DebtCard({
             <Heading size="md">{debt.name}</Heading>
             {debt.target && <Ionicons name="ribbon" size={16} color="blue" />}
           </View>
-
           <Text>{debt.type}</Text>
         </View>
         <View className="gap-2 items-end flex-col">
@@ -48,6 +52,6 @@ export function DebtCard({
           <ProgressFilledTrack />
         </Progress>
       )}
-    </Card>
+    </Pressable>
   );
 }
