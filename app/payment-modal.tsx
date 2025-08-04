@@ -16,12 +16,13 @@ import { Debt } from "@/types/Debt";
 import { Payment } from "@/types/Payment";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo } from "react";
-import { Alert, ScrollView } from "react-native";
+import { Alert, ScrollView, View } from "react-native";
 
 export default function PaymentModal() {
   const { id, debtId } = useLocalSearchParams();
   const { user } = useUserStore();
-  const { payments, loadPayments, setPayments } = usePaymentStore();
+  const { payments, loadPayments, setPayments, savePayments } =
+    usePaymentStore();
   const { debts, loadDebts } = useDebtStore();
 
   const activePayment = useMemo(() => {
@@ -89,6 +90,11 @@ export default function PaymentModal() {
     );
   };
 
+  const handleSave = async () => {
+    await savePayments(payments);
+    router.back();
+  };
+
   useEffect(() => {
     loadPayments();
     loadDebts();
@@ -98,10 +104,16 @@ export default function PaymentModal() {
 
   return (
     <>
-      <ScrollView className="p-6 relative">
-        <Button variant="link" onPress={router.back} className="justify-end">
-          <ButtonText className="text-xl">Done</ButtonText>
-        </Button>
+      <ScrollView className="p-6 pt-4">
+        <View className="flex-row w-full justify-between items-center mb-4">
+          <Button variant="link" onPress={router.back} className="">
+            <ButtonText className="text-xl font-normal">Cancel</ButtonText>
+          </Button>
+
+          <Button variant="link" onPress={handleSave} className="">
+            <ButtonText className="text-xl">Save</ButtonText>
+          </Button>
+        </View>
         <VStack space="xl">
           <Heading className="text-3xl">
             {activePayment.id === "" ? "New" : "Edit"} payment

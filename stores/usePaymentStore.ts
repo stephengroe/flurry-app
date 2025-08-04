@@ -6,6 +6,7 @@ type PaymentState = {
   payments: Payment[];
   loadPayments: () => Promise<void>;
   setPayments: (payments: Payment[]) => void;
+  savePayments: (payment: Payment[]) => void;
 };
 
 export const usePaymentStore = create<PaymentState>((set) => ({
@@ -24,6 +25,13 @@ export const usePaymentStore = create<PaymentState>((set) => ({
       }
     } catch (e) {
       console.error("Error fetching payment:", e);
+    }
+  },
+  savePayments: async (payments) => {
+    try {
+      await AsyncStorage.setItem("payments", JSON.stringify(payments));
+    } catch (e) {
+      console.error("Error saving payments:", e);
     }
   },
 }));
