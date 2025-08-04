@@ -1,11 +1,3 @@
-import {
-  AlertDialog,
-  AlertDialogBackdrop,
-  AlertDialogBody,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-} from "@/components/ui/alert-dialog";
 import { Button, ButtonText } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -22,8 +14,8 @@ import { VStack } from "@/components/ui/vstack";
 import { useDebtStore } from "@/stores/useDebtStore";
 import { Debt } from "@/types/Debt";
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useMemo, useState } from "react";
-import { ScrollView, View } from "react-native";
+import { useEffect, useMemo } from "react";
+import { Alert, ScrollView, View } from "react-native";
 
 export default function DebtModal() {
   const { id } = useLocalSearchParams();
@@ -45,13 +37,11 @@ export default function DebtModal() {
     return foundDebt ?? defaultDebt;
   }, [debts, id]);
 
-  const handleDelete = () => {
+  const deleteDebt = () => {
     const updatedDebts = debts.filter((d) => d.id !== id);
     setDebts(updatedDebts);
+    router.back();
   };
-
-  const [showAlertDialog, setShowAlertDialog] = useState(false);
-  const handleClose = () => setShowAlertDialog(false);
 
   const handleChange = async (key: keyof Debt, value: string) => {
     const updatedDebt = {
@@ -62,6 +52,25 @@ export default function DebtModal() {
           : value,
     };
     setDebts(debts.map((d) => (d.id === activeDebt.id ? updatedDebt : d)));
+  };
+
+  const handleDelete = () => {
+    Alert.alert(
+      `Delete ${activeDebt.name ?? "this debt"}?`,
+      "This will delete this debt and all its data. This cannot be undone.",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: deleteDebt,
+        },
+      ],
+      { cancelable: false }
+    );
   };
 
   useEffect(() => {
@@ -216,45 +225,14 @@ export default function DebtModal() {
                 <Button size="lg">
                   <ButtonText>Log payment</ButtonText>
                 </Button>
-                <Button size="lg" action="negative">
-                  <ButtonText onPress={() => console.log("delete attempt")}>
-                    Delete debt
-                  </ButtonText>
+                <Button size="lg" action="negative" onPress={handleDelete}>
+                  <ButtonText>Delete debt</ButtonText>
                 </Button>
               </VStack>
             </>
           )}
         </VStack>
       </ScrollView>
-      <AlertDialog isOpen={showAlertDialog} onClose={handleClose} size="md">
-        <AlertDialogBackdrop />
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <Heading className="text-typography-950 font-semibold" size="md">
-              Delete this debt?
-            </Heading>
-          </AlertDialogHeader>
-          <AlertDialogBody className="mt-3 mb-4">
-            <Text size="md">
-              This will delete this debt and all its data. This cannot be
-              undone.
-            </Text>
-          </AlertDialogBody>
-          <AlertDialogFooter className="">
-            <Button
-              variant="outline"
-              action="secondary"
-              onPress={handleClose}
-              size="sm"
-            >
-              <ButtonText>Cancel</ButtonText>
-            </Button>
-            <Button size="sm" onPress={handleDelete}>
-              <ButtonText>Delete</ButtonText>
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </>
   );
 }

@@ -1,11 +1,3 @@
-import {
-  AlertDialog,
-  AlertDialogBackdrop,
-  AlertDialogBody,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-} from "@/components/ui/alert-dialog";
 import { Button, ButtonText } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
@@ -16,15 +8,10 @@ import { User } from "@/types/User";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { useState } from "react";
-import { View } from "react-native";
+import { Alert, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Settings() {
-  const [showAlertDialog, setShowAlertDialog] = useState(false);
-  const [alertReason, setalertReason] = useState<"delete" | "overwrite">(
-    "delete"
-  );
-  const handleClose = () => setShowAlertDialog(false);
   const defaultUser: User = {
     id: "0",
     name: "User",
@@ -35,14 +22,56 @@ export default function Settings() {
   const [user, setUser] = useState<User>(defaultUser);
   const [defaultData, setDefaultData] = useState(true);
 
+  const handleOverwriteData = () => {
+    if (defaultData) {
+      generateSampleData();
+      fetchUser();
+    } else {
+      Alert.alert(
+        "Overwrite existing data?",
+        "Loading sample data will replace all existing debts, payments, and user data. This cannot be undone.",
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
+          },
+          {
+            text: "Replace",
+            style: "destructive",
+            onPress: overwriteData,
+          },
+        ],
+        { cancelable: false }
+      );
+    }
+  };
+
   const overwriteData = async () => {
     try {
       await generateSampleData();
       await fetchUser();
-      setShowAlertDialog(false);
     } catch (e) {
       console.error("Error generating sample data:", e);
     }
+  };
+
+  const handleClearData = async () => {
+    Alert.alert(
+      "Delete all data?",
+      "This will erase all existing debts, payments, and user data. This cannot be undone.",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: clearData,
+        },
+      ],
+      { cancelable: false }
+    );
   };
 
   const clearData = async () => {
@@ -64,21 +93,6 @@ export default function Settings() {
     } catch (e) {
       console.error("Error fetching user:", e);
     }
-  };
-
-  const handleSampleData = async () => {
-    if (defaultData) {
-      generateSampleData();
-      fetchUser();
-    } else {
-      setalertReason("overwrite");
-      setShowAlertDialog(true);
-    }
-  };
-
-  const handleClearData = async () => {
-    setalertReason("delete");
-    setShowAlertDialog(true);
   };
 
   return (
@@ -112,7 +126,7 @@ export default function Settings() {
           </Card>
 
           <View className="gap-3">
-            <Button onPress={handleSampleData}>
+            <Button onPress={handleOverwriteData}>
               <ButtonText>Load sample data</ButtonText>
             </Button>
             <Button onPress={handleClearData} action="negative">
@@ -121,42 +135,6 @@ export default function Settings() {
           </View>
         </VStack>
       </SafeAreaView>
-
-      <AlertDialog isOpen={showAlertDialog} onClose={handleClose} size="md">
-        <AlertDialogBackdrop />
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <Heading className="text-typography-950 font-semibold" size="md">
-              Overwrite existing data?
-            </Heading>
-          </AlertDialogHeader>
-          <AlertDialogBody className="mt-3 mb-4">
-            <Text size="md">
-              {alertReason === "delete"
-                ? "Loading sample data will erase all existing debts, payments, and user data and replace it with sample data. This cannot be undone."
-                : "Clearing data will erase all existing debts, payments, and user data. This cannot be undone."}
-            </Text>
-          </AlertDialogBody>
-          <AlertDialogFooter className="">
-            <Button
-              variant="outline"
-              action="secondary"
-              onPress={handleClose}
-              size="sm"
-            >
-              <ButtonText>Cancel</ButtonText>
-            </Button>
-            <Button
-              size="sm"
-              onPress={alertReason === "delete" ? clearData : overwriteData}
-            >
-              <ButtonText>
-                {alertReason === "delete" ? "Delete" : "Overwrite"}
-              </ButtonText>
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </>
   );
 }
