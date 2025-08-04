@@ -90,7 +90,21 @@ export default function PaymentModal() {
   };
 
   const handleSave = async () => {
-    await savePayments(payments);
+    // To create new payment
+    if (activePayment && activePayment.id === "") {
+      const id = Date.now().toString();
+      const updatedPayment = { ...activePayment, id };
+
+      const newPayments = [...payments, updatedPayment];
+      setPayments(newPayments);
+      await savePayments(newPayments);
+    } else {
+      const newPayments = payments.map((p) =>
+        p.id === activePayment.id ? activePayment : p
+      );
+      setPayments(newPayments);
+      await savePayments(newPayments);
+    }
     router.back();
   };
 

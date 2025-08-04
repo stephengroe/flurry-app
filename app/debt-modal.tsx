@@ -79,8 +79,18 @@ export default function DebtModal() {
   };
 
   const handleSave = async () => {
-    await saveDebts(debts);
-    console.log("saved!");
+    // For creating new debt
+    if (activeDebt && activeDebt.id === "") {
+      const id = Date.now().toString();
+      const updatedDebt = { ...activeDebt, id: id };
+
+      const newDebts = [...debts, updatedDebt];
+      setActiveDebt(updatedDebt);
+      setDebts(newDebts);
+      await saveDebts(newDebts);
+    } else {
+      await saveDebts(debts);
+    }
     router.back();
   };
 
