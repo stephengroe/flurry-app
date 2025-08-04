@@ -32,10 +32,6 @@ export default function Plan() {
     return debts.filter((debt) => debt.balance === 0);
   }, [debts]);
 
-  const totalInitialValue =
-    pendingDebts.reduce((sum, debt) => {
-      return (sum += debt.initialValue);
-    }, 0) / 100;
   const totalBalance =
     pendingDebts.reduce((sum, debt) => {
       return (sum += debt.balance);
@@ -108,25 +104,17 @@ export default function Plan() {
             <Card className="items-center flex-1">
               <Text className="font-bold text-2xl text-black">
                 {(
-                  (pendingDebts.reduce((sum, debt) => {
+                  pendingDebts.reduce((sum, debt) => {
                     return (sum += debt.minPayment);
-                  }, 0) +
-                    user.extraPayment) /
-                  100
+                  }, 0) / 100
                 ).toLocaleString("en-US", {
                   style: "currency",
                   currency: "USD",
                 })}
               </Text>
-              <Text>due monthly</Text>
+              <Text>monthly</Text>
             </Card>
             <Card className="items-center flex-1">
-              <Text className="font-bold text-2xl text-black">
-                {Math.round((totalBalance / totalInitialValue) * 100)}%
-              </Text>
-              <Text>paid off</Text>
-            </Card>
-            {/* <Card className="items-center flex-1">
               <Text className="font-bold text-2xl text-black">
                 {totalBalance.toLocaleString("en-US", {
                   style: "currency",
@@ -134,7 +122,7 @@ export default function Plan() {
                 })}
               </Text>
               <Text>total balance</Text>
-            </Card> */}
+            </Card>
           </View>
         </VStack>
 

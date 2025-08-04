@@ -53,6 +53,18 @@ export default function Index() {
     }
   };
 
+  const percentagePaid = useMemo(() => {
+    const totalInitialValue =
+      debts.reduce((sum, debt) => {
+        return (sum += debt.initialValue);
+      }, 0) / 100;
+    const totalBalance =
+      debts.reduce((sum, debt) => {
+        return (sum += debt.balance);
+      }, 0) / 100;
+    return Math.round((totalBalance / totalInitialValue) * 100);
+  }, [debts]);
+
   useEffect(() => {
     loadUser();
     loadDebts();
@@ -72,24 +84,40 @@ export default function Index() {
               <Ionicons name="settings-outline" size={24} color="grey" />
             </Link>
           </View>
-          <Card
-            size="lg"
-            variant="elevated"
-            className="items-center flex-row gap-4"
-          >
-            <Ionicons name="today-outline" size={24} color="grey" />
-            <View>
-              <Text className="text-xl font-bold text-black">
-                {new Date(
-                  getFreedomDate(filteredDebts, user.extraPayment)
-                ).toLocaleDateString("en-US", {
-                  month: "long",
-                  year: "numeric",
-                })}
-              </Text>
-              <Text className="text-lg center">Debt freedom date</Text>
-            </View>
-          </Card>
+          <View className="flex-row gap-3 w-full">
+            <Card
+              size="lg"
+              variant="elevated"
+              className="items-center flex-row gap-4 flex-1 w-1/2"
+            >
+              <Ionicons name="today-outline" size={24} color="grey" />
+              <View>
+                <Text className="text-xl font-bold text-black">
+                  {new Date(
+                    getFreedomDate(filteredDebts, user.extraPayment)
+                  ).toLocaleDateString("en-US", {
+                    month: "short",
+                    year: "numeric",
+                  })}
+                </Text>
+                <Text className="text-lg center">Debt-free</Text>
+              </View>
+            </Card>
+
+            <Card
+              size="lg"
+              variant="elevated"
+              className="items-center flex-row gap-4 flex-1 w-1/2"
+            >
+              <Ionicons name="flame-outline" size={24} color="grey" />
+              <View>
+                <Text className="text-xl font-bold text-black">
+                  {percentagePaid}%
+                </Text>
+                <Text className="text-lg center">Paid off</Text>
+              </View>
+            </Card>
+          </View>
         </VStack>
 
         <View>
