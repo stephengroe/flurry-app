@@ -75,8 +75,6 @@ export default function DebtModal() {
     );
   };
 
-  const freedomDate = new Date(getFreedomDate(debts, user.extraPayment));
-
   useEffect(() => {
     loadDebts();
   }, [loadDebts]);
@@ -115,7 +113,9 @@ export default function DebtModal() {
                 </Card>
                 <Card className="flex-1 items-center">
                   <Text className="font-bold text-3xl text-black text-center">
-                    {freedomDate.toLocaleDateString("en-US", {
+                    {new Date(
+                      getFreedomDate(debts, user.extraPayment, activeDebt.id)
+                    ).toLocaleDateString("en-US", {
                       month: "short",
                       year: "numeric",
                     })}

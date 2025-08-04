@@ -1,6 +1,10 @@
 import { Debt } from "@/types/Debt";
 
-export function getFreedomDate(initialDebts: Debt[], extra: number): number {
+export function getFreedomDate(
+  initialDebts: Debt[],
+  extra: number,
+  id?: string
+): number {
   if (!initialDebts || initialDebts.length === 0) return Date.now();
 
   // We'll be adjusting balances based on interest/payments, so need duplicate
@@ -25,17 +29,24 @@ export function getFreedomDate(initialDebts: Debt[], extra: number): number {
       debt.balance = getInterestBalance(debt) - payment;
       extraRemainder = 0;
 
-      if (debt.balance < 0) {
+      if (debt.balance <= 0) {
         extraRemainder = -debt.balance;
         debt.balance = 0;
         snowball += debt.minPayment;
+
+        if (debt.id === id) {
+          return getDate(months);
+        }
       }
     }
   }
 
+  return getDate(months);
+}
+
+function getDate(months: number): number {
   const today = new Date();
-  const freedomDate = today.setMonth(today.getMonth() + months);
-  return freedomDate;
+  return today.setMonth(today.getMonth() + months);
 }
 
 function getInterestBalance(debt: Debt) {
