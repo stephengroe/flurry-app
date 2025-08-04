@@ -1,3 +1,4 @@
+import { DebtForm } from "@/components/debt-form";
 import {
   AlertDialog,
   AlertDialogBackdrop,
@@ -10,6 +11,7 @@ import { Button, ButtonText } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
 import { Progress, ProgressFilledTrack } from "@/components/ui/progress";
+import { Spinner } from "@/components/ui/spinner";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { Debt } from "@/models/Debt";
@@ -19,19 +21,8 @@ import { useEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
 
 export default function DebtModal() {
-  const emptyDebt: Debt = {
-    id: "",
-    name: "",
-    type: "",
-    initialValue: 0,
-    target: false,
-    balance: 0,
-    minPayment: 0,
-    interest: 0,
-  };
-
   const { id } = useLocalSearchParams();
-  const [debt, setDebt] = useState<Debt>(emptyDebt);
+  const [debt, setDebt] = useState<Debt | null>(null);
   const [showAlertDialog, setShowAlertDialog] = useState(false);
 
   const handleClose = () => setShowAlertDialog(false);
@@ -43,7 +34,7 @@ export default function DebtModal() {
         const fetchedDebts: Debt[] = JSON.parse(data);
         const adjustedDebt = fetchedDebts.find((d) => d.id === id);
         if (adjustedDebt === undefined) {
-          setDebt(emptyDebt);
+          setDebt(null);
         } else {
           setDebt(adjustedDebt);
         }
@@ -71,6 +62,8 @@ export default function DebtModal() {
   useEffect(() => {
     fetchDebt();
   });
+
+  if (!debt) return <Spinner size="large" />;
 
   return (
     <>
@@ -105,6 +98,11 @@ export default function DebtModal() {
               </Card>
             </View>
           </Card>
+
+          <Card>
+            <DebtForm debt={debt} />
+          </Card>
+
           <Card
             className={`p-6 gap-4 ${debt.balance === 0 ? "bg-green-100" : debt.target ? "bg-blue-100" : "bg-white"}`}
           >
