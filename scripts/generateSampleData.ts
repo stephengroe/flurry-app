@@ -1,9 +1,14 @@
+import { useDebtStore } from "@/stores/useDebtStore";
+import { useUserStore } from "@/stores/useUserStore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Debt } from "../types/Debt";
 import { Payment } from "../types/Payment";
 import { User } from "../types/User";
 
 export async function generateSampleData() {
+  const setDebts = useDebtStore.getState().setDebts;
+  const setUser = useUserStore.getState().setUser;
+
   const sampleUser: User = {
     id: "1",
     name: "Alex",
@@ -321,6 +326,9 @@ export async function generateSampleData() {
       amount: 456,
     },
   ];
+
+  setUser(sampleUser);
+  setDebts(sampleDebts);
 
   const user: [string, string] = ["user", JSON.stringify(sampleUser)];
   const debts: [string, string] = ["debts", JSON.stringify(sampleDebts)];
