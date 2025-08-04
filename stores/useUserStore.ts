@@ -6,6 +6,7 @@ type UserState = {
   user: User;
   loadUser: () => Promise<void>;
   setUser: (user: User) => void;
+  saveUser: (user: User) => void;
 };
 
 const defaultUser: User = {
@@ -27,6 +28,13 @@ export const useUserStore = create<UserState>((set) => ({
       }
     } catch (e) {
       console.error("Error fetching user:", e);
+    }
+  },
+  saveUser: async (user) => {
+    try {
+      await AsyncStorage.setItem("user", JSON.stringify(user));
+    } catch (e) {
+      console.error("Error saving user:", e);
     }
   },
 }));

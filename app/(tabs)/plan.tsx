@@ -14,13 +14,14 @@ import { useDebtStore } from "@/stores/useDebtStore";
 import { useUserStore } from "@/stores/useUserStore";
 import { getFreedomDate } from "@/utils/freedom-date";
 import { router } from "expo-router";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Plan() {
   const { debts, loadDebts } = useDebtStore();
-  const { user, setUser, loadUser } = useUserStore();
+  const { user, setUser, loadUser, saveUser } = useUserStore();
+  const [hasChanged, setHasChanged] = useState(false);
 
   const pendingDebts = useMemo(() => {
     return debts
@@ -42,6 +43,11 @@ export default function Plan() {
   const monthsLeft =
     (freedomDate.getFullYear() - today.getFullYear()) * 12 +
     (freedomDate.getMonth() - today.getMonth());
+
+  const handleSave = async () => {
+    await saveUser(user);
+    setHasChanged(false);
+  };
 
   useEffect(() => {
     loadDebts();
@@ -91,14 +97,32 @@ export default function Plan() {
               isReversed={false}
               value={user.extraPayment}
               onChange={(value) => {
+                setHasChanged(true);
                 setUser({ ...user, extraPayment: value });
               }}
+              className="my-4"
             >
               <SliderTrack>
                 <SliderFilledTrack />
               </SliderTrack>
               <SliderThumb />
             </Slider>
+
+            {hasChanged && (
+              <View className="flex-row gap-6 justify-center items-center">
+                <Button
+                  variant="outline"
+                  className="flex-1"
+                  onPress={() => setHasChanged(false)}
+                >
+                  <ButtonText>Cancel</ButtonText>
+                </Button>
+
+                <Button className="flex-1" onPress={handleSave}>
+                  <ButtonText>Save amount</ButtonText>
+                </Button>
+              </View>
+            )}
           </Card>
           <View className="flex-row w-full gap-4">
             <Card className="items-center flex-1">
