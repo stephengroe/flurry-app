@@ -15,6 +15,7 @@ import { VStack } from "@/components/ui/vstack";
 import { generateSampleData } from "@/scripts/generateSampleData";
 import { Debt } from "@/types/Debt";
 import { User } from "@/types/User";
+import { getFreedomDate } from "@/utils/freedom-date";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Link } from "expo-router";
@@ -88,6 +89,8 @@ export default function Index() {
     fetchDebts();
   }, []);
 
+  if (!debts) return null;
+
   return (
     <SafeAreaView>
       <ScrollView>
@@ -102,7 +105,7 @@ export default function Index() {
           </View>
           <Card size="lg" variant="elevated" className="">
             <Heading size="lg" className="mb-1">
-              April 2027
+              {new Date(getFreedomDate(debts, 10000)).toLocaleDateString()}
             </Heading>
             <Text>Debt freedom date</Text>
           </Card>
