@@ -1,7 +1,10 @@
 # ❄️ Flurry: Debt Tracking App
 
 > Get Debt Free, One Flake at a Time
-> Flurry is a minimalistic app to track, manage, and pay off your debts using the debt snowball method. Currently a demo project.
+
+Flurry is a minimalistic app to track, manage, and pay off your debts using the debt snowball method. Currently a demo project.
+
+![Flurry App Screenshots](assets/images/flurry-screenshots.png)
 
 ## Features
 
