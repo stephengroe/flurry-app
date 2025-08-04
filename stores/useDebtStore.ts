@@ -15,7 +15,13 @@ export const useDebtStore = create<DebtState>((set) => ({
     try {
       const data = await AsyncStorage.getItem("debts");
       if (data) {
-        set({ debts: JSON.parse(data) });
+        const loadedDebts: Debt[] = JSON.parse(data);
+        if (loadedDebts) {
+          const sortedDebts = loadedDebts.sort((a, b) => a.balance - b.balance);
+          set({ debts: sortedDebts });
+        } else {
+          set({ debts: [] });
+        }
       }
     } catch (e) {
       console.error("Error fetching debt:", e);
