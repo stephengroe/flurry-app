@@ -4,28 +4,19 @@ import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { generateSampleData } from "@/scripts/generateSampleData";
-import { User } from "@/types/User";
+import { useUserStore } from "@/stores/useUserStore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
-import { useState } from "react";
+import { useEffect } from "react";
 import { Alert, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Settings() {
-  const defaultUser: User = {
-    id: "0",
-    name: "User",
-    joinDate: new Date().toISOString(),
-    extraPayment: 0,
-  };
-
-  const [user, setUser] = useState<User>(defaultUser);
-  const [defaultData, setDefaultData] = useState(true);
+  const { user, loadUser } = useUserStore();
 
   const handleOverwriteData = () => {
-    if (defaultData) {
-      generateSampleData();
-      fetchUser();
+    if (user.name === "User") {
+      overwriteData();
     } else {
       Alert.alert(
         "Overwrite existing data?",
@@ -49,7 +40,6 @@ export default function Settings() {
   const overwriteData = async () => {
     try {
       await generateSampleData();
-      await fetchUser();
     } catch (e) {
       console.error("Error generating sample data:", e);
     }
@@ -82,18 +72,9 @@ export default function Settings() {
     }
   };
 
-  const fetchUser = async () => {
-    try {
-      const data = await AsyncStorage.getItem("user");
-      if (data !== null) {
-        const fetchedUser: User = JSON.parse(data);
-        setUser(fetchedUser);
-        setDefaultData(false);
-      }
-    } catch (e) {
-      console.error("Error fetching user:", e);
-    }
-  };
+  useEffect(() => {
+    loadUser();
+  }, [loadUser]);
 
   return (
     <>
@@ -122,6 +103,17 @@ export default function Settings() {
                 month: "long",
                 year: "numeric",
               })}
+            </Text>
+          </Card>
+          <Card className="align-center p-8">
+            <Heading size="xl" className="text-center">
+              {(user.extraPayment / 100).toLocaleString("en-US", {
+                style: "currency",
+                currency: "USD",
+              })}
+            </Heading>
+            <Text size="md" className="text-center">
+              Extra monthly payment
             </Text>
           </Card>
 

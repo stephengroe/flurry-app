@@ -12,14 +12,16 @@ import { Spinner } from "@/components/ui/spinner";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { useDebtStore } from "@/stores/useDebtStore";
+import { useUserStore } from "@/stores/useUserStore";
 import { Debt } from "@/types/Debt";
+import { getFreedomDate } from "@/utils/freedom-date";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo } from "react";
 import { Alert, ScrollView, View } from "react-native";
 
 export default function DebtModal() {
   const { id } = useLocalSearchParams();
-
+  const { user } = useUserStore();
   const { debts, loadDebts, setDebts } = useDebtStore();
   const activeDebt = useMemo(() => {
     const defaultDebt: Debt = {
@@ -73,6 +75,8 @@ export default function DebtModal() {
     );
   };
 
+  const freedomDate = new Date(getFreedomDate(debts, user.extraPayment));
+
   useEffect(() => {
     loadDebts();
   }, [loadDebts]);
@@ -111,7 +115,10 @@ export default function DebtModal() {
                 </Card>
                 <Card className="flex-1 items-center">
                   <Text className="font-bold text-3xl text-black text-center">
-                    Nov. 2027
+                    {freedomDate.toLocaleDateString("en-US", {
+                      month: "short",
+                      year: "numeric",
+                    })}
                   </Text>
                   <Text>freedom date</Text>
                 </Card>

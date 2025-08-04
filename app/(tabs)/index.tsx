@@ -14,24 +14,17 @@ import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { generateSampleData } from "@/scripts/generateSampleData";
 import { useDebtStore } from "@/stores/useDebtStore";
-import { User } from "@/types/User";
+import { useUserStore } from "@/stores/useUserStore";
 import { getFreedomDate } from "@/utils/freedom-date";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Link } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Index() {
-  const defaultUser: User = {
-    id: "0",
-    name: "User",
-    joinDate: new Date().toISOString(),
-    extraPayment: 0,
-  };
+  const { user, loadUser } = useUserStore();
 
-  const [user, setUser] = useState<User>(defaultUser);
   const [defaultData, setDefaultData] = useState(true);
   const [showAlertDialog, setShowAlertDialog] = useState(false);
   const { debts, loadDebts } = useDebtStore();
@@ -41,23 +34,9 @@ export default function Index() {
 
   const handleClose = () => setShowAlertDialog(false);
 
-  const fetchUser = async () => {
-    try {
-      const data = await AsyncStorage.getItem("user");
-      if (data !== null) {
-        const fetchedUser: User = JSON.parse(data);
-        setUser(fetchedUser);
-        setDefaultData(false);
-      }
-    } catch (e) {
-      console.error("Error fetching user:", e);
-    }
-  };
-
   const handleOverwrite = async () => {
     try {
       await generateSampleData();
-      await fetchUser();
       setShowAlertDialog(false);
     } catch (e) {
       console.error("Error generating sample data:", e);
@@ -67,16 +46,15 @@ export default function Index() {
   const handleSampleData = async () => {
     if (defaultData) {
       generateSampleData();
-      fetchUser();
     } else {
       setShowAlertDialog(true);
     }
   };
 
   useEffect(() => {
-    fetchUser();
+    loadUser();
     loadDebts();
-  }, [loadDebts]);
+  }, [loadDebts, loadUser]);
 
   if (!debts) return null;
 
@@ -139,8 +117,8 @@ export default function Index() {
             ) : (
               <View className="gap-6 p-6 mx-6 items-center">
                 <Text className="text-center">
-                  No data yet. Add some, or load sample data to start. You can
-                  always load sample data in Settings.
+                  No debts added yet. Load sample data to start, or load later
+                  in Settings.
                 </Text>
                 <Button onPress={handleSampleData}>
                   <ButtonText>Load sample data</ButtonText>

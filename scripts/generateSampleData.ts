@@ -7,6 +7,7 @@ export async function generateSampleData() {
   const sampleUser: User = {
     id: "1",
     name: "Alex",
+    extraPayment: 25000,
     joinDate: "2023-02-03T10:31:00.000Z",
   };
 
