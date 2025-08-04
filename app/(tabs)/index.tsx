@@ -1,12 +1,4 @@
 import { DebtCard } from "@/components/debt-card";
-import {
-  AlertDialog,
-  AlertDialogBackdrop,
-  AlertDialogBody,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-} from "@/components/ui/alert-dialog";
 import { Button, ButtonText } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
@@ -18,36 +10,46 @@ import { useUserStore } from "@/stores/useUserStore";
 import { getFreedomDate } from "@/utils/freedom-date";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Link } from "expo-router";
-import React, { useEffect, useMemo, useState } from "react";
-import { ScrollView, View } from "react-native";
+import React, { useEffect, useMemo } from "react";
+import { Alert, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Index() {
   const { user, loadUser } = useUserStore();
-
-  const [defaultData, setDefaultData] = useState(true);
-  const [showAlertDialog, setShowAlertDialog] = useState(false);
   const { debts, loadDebts } = useDebtStore();
+
   const filteredDebts = useMemo(() => {
     return debts.filter((d) => d.balance > 0);
   }, [debts]);
 
-  const handleClose = () => setShowAlertDialog(false);
-
-  const handleOverwrite = async () => {
-    try {
-      await generateSampleData();
-      setShowAlertDialog(false);
-    } catch (e) {
-      console.error("Error generating sample data:", e);
+  const handleOverwriteData = () => {
+    if (user.name === "User") {
+      overwriteData();
+    } else {
+      Alert.alert(
+        "Overwrite existing data?",
+        "Loading sample data will replace all existing debts, payments, and user data. This cannot be undone.",
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
+          },
+          {
+            text: "Replace",
+            style: "destructive",
+            onPress: overwriteData,
+          },
+        ],
+        { cancelable: false }
+      );
     }
   };
 
-  const handleSampleData = async () => {
-    if (defaultData) {
-      generateSampleData();
-    } else {
-      setShowAlertDialog(true);
+  const overwriteData = async () => {
+    try {
+      await generateSampleData();
+    } catch (e) {
+      console.error("Error generating sample data:", e);
     }
   };
 
@@ -59,92 +61,60 @@ export default function Index() {
   if (!debts) return null;
 
   return (
-    <>
-      <SafeAreaView>
-        <ScrollView>
-          <VStack className="m-6 mb-3" space="xl">
-            <View className="flex-row justify-between items-center">
-              <Heading size="3xl" className="flex-start">
-                {user.name === "User" ? "Welcome" : `Welcome, ${user.name}`}
-              </Heading>
-              <Link href="../settings-modal">
-                <Ionicons name="settings-outline" size={24} color="grey" />
-              </Link>
-            </View>
-            <Card
-              size="lg"
-              variant="elevated"
-              className="items-center flex-row gap-4"
-            >
-              <Ionicons name="today-outline" size={24} color="grey" />
-              <View>
-                <Text className="text-xl font-bold text-black">
-                  {new Date(
-                    getFreedomDate(filteredDebts, user.extraPayment)
-                  ).toLocaleDateString("en-US", {
-                    month: "long",
-                    year: "numeric",
-                  })}
-                </Text>
-                <Text className="text-lg center">Debt freedom date</Text>
-              </View>
-            </Card>
-          </VStack>
-
-          <View>
-            <Heading size="xl" className="m-6">
-              Debts
+    <SafeAreaView>
+      <ScrollView>
+        <VStack className="m-6 mb-3" space="xl">
+          <View className="flex-row justify-between items-center">
+            <Heading size="3xl" className="flex-start">
+              {user.name === "User" ? "Welcome" : `Welcome, ${user.name}`}
             </Heading>
-            {filteredDebts.length > 0 ? (
-              <VStack space="sm">
-                {filteredDebts.map((debt) => {
-                  return <DebtCard key={debt.id} debt={debt} />;
-                })}
-              </VStack>
-            ) : (
-              <View className="gap-6 p-6 mx-6 items-center">
-                <Text className="text-center">
-                  No debts added yet. Load sample data to start, or load later
-                  in Settings.
-                </Text>
-                <Button onPress={handleSampleData}>
-                  <ButtonText>Load sample data</ButtonText>
-                </Button>
-              </View>
-            )}
+            <Link href="../settings-modal">
+              <Ionicons name="settings-outline" size={24} color="grey" />
+            </Link>
           </View>
-        </ScrollView>
-      </SafeAreaView>
+          <Card
+            size="lg"
+            variant="elevated"
+            className="items-center flex-row gap-4"
+          >
+            <Ionicons name="today-outline" size={24} color="grey" />
+            <View>
+              <Text className="text-xl font-bold text-black">
+                {new Date(
+                  getFreedomDate(filteredDebts, user.extraPayment)
+                ).toLocaleDateString("en-US", {
+                  month: "long",
+                  year: "numeric",
+                })}
+              </Text>
+              <Text className="text-lg center">Debt freedom date</Text>
+            </View>
+          </Card>
+        </VStack>
 
-      <AlertDialog isOpen={showAlertDialog} onClose={handleClose} size="md">
-        <AlertDialogBackdrop />
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <Heading className="text-typography-950 font-semibold" size="md">
-              Overwrite existing data?
-            </Heading>
-          </AlertDialogHeader>
-          <AlertDialogBody className="mt-3 mb-4">
-            <Text size="md">
-              Loading sample data will erase all existing debts, payments, and
-              user data and replace it with sample data. This cannot be undone.
-            </Text>
-          </AlertDialogBody>
-          <AlertDialogFooter className="">
-            <Button
-              variant="outline"
-              action="secondary"
-              onPress={handleClose}
-              size="sm"
-            >
-              <ButtonText>Cancel</ButtonText>
-            </Button>
-            <Button size="sm" onPress={handleOverwrite}>
-              <ButtonText>Overwrite</ButtonText>
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </>
+        <View>
+          <Heading size="xl" className="m-6">
+            Debts
+          </Heading>
+          {filteredDebts.length > 0 ? (
+            <VStack space="sm">
+              {filteredDebts.map((debt) => {
+                return <DebtCard key={debt.id} debt={debt} />;
+              })}
+            </VStack>
+          ) : (
+            <View className="gap-6 p-6 mx-6 items-center">
+              <Text className="text-center">
+                No debts added yet. Load sample data to start, or load later in
+                Settings.
+              </Text>
+              <Button onPress={handleOverwriteData}>
+                <ButtonText>Load sample data</ButtonText>
+              </Button>
+            </View>
+          )}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
