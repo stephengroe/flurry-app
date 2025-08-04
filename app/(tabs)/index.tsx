@@ -149,8 +149,10 @@ export default function Index() {
                 })}
               </VStack>
             ) : (
-              <View>
-                <Text>No data yet. Try loading sample data.</Text>
+              <View className="gap-6 p-6 mx-6 items-center">
+                <Text>
+                  No data yet. Try loading sample data to get started.
+                </Text>
                 <Button onPress={handleSampleData}>
                   <ButtonText>Load sample data</ButtonText>
                 </Button>
