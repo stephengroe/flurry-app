@@ -1,20 +1,18 @@
-import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
-import { Text } from "@/components/ui/text";
-import { View } from "react-native";
+import { VStack } from "@/components/ui/vstack";
+import { ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Payments() {
   return (
     <SafeAreaView>
-      <View>
-        <Card size="lg" variant="elevated" className="m-3">
-          <Heading size="lg" className="mb-1">
+      <ScrollView>
+        <VStack className="m-6 mb-3 gap-4" space="2xl">
+          <Heading size="3xl" className="flex-start">
             Payments
           </Heading>
-          <Text size="md">This screen will list recent payments made.</Text>
-        </Card>
-      </View>
+        </VStack>
+      </ScrollView>
     </SafeAreaView>
   );
 }
