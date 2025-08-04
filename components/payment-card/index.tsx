@@ -3,6 +3,7 @@ import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { Debt } from "@/types/Debt";
 import { Payment } from "@/types/Payment";
+import { router } from "expo-router";
 import { Pressable, View } from "react-native";
 
 export function PaymentCard({
@@ -12,9 +13,12 @@ export function PaymentCard({
   payment: Payment;
   debt: Debt | undefined;
 }) {
-  // const handlePress = () => {
-  //   router.navigate({ pathname: "../payment-modal", params: { id: payment.id } });
-  // };
+  const handlePress = () => {
+    router.navigate({
+      pathname: "../payment-modal",
+      params: { id: payment.id },
+    });
+  };
 
   const status =
     payment.amount < payment.minPayment
@@ -25,7 +29,7 @@ export function PaymentCard({
 
   return (
     <Pressable
-      // onPress={handlePress}
+      onPress={handlePress}
       className={"px-6 py-4 gap-1  text-black bg-white"}
     >
       <View className="flex-row justify-between">
