@@ -1,4 +1,6 @@
 import { Debt } from "@/models/Debt";
+import { debounce } from "@/utils/debounce";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState } from "react";
 import { Text } from "react-native-svg";
 import { Card } from "../ui/card";
@@ -13,7 +15,7 @@ import { VStack } from "../ui/vstack";
 export function DebtForm({ debt: initialDebt }: { debt: Debt }) {
   const [debt, setDebt] = useState<Debt>(initialDebt);
 
-  const handleChange = (key: keyof Debt, value: string) => {
+  const handleChange = async (key: keyof Debt, value: string) => {
     const updatedDebt = {
       ...debt,
       [key]:
@@ -22,6 +24,23 @@ export function DebtForm({ debt: initialDebt }: { debt: Debt }) {
           : value,
     };
     setDebt(updatedDebt);
+    await debounce(() => saveToStorage(updatedDebt), 500);
+  };
+
+  const saveToStorage = async (updatedDebt: Debt) => {
+    try {
+      const data = await AsyncStorage.getItem("debt");
+      let updatedDebts: Debt[] = [];
+      if (data !== null) {
+        const debts: Debt[] = JSON.parse(data);
+        updatedDebts = debts.filter((d) => d.id !== debt.id);
+      }
+      updatedDebts.push(debt);
+
+      await AsyncStorage.setItem("debt", JSON.stringify(updatedDebts));
+    } catch (e) {
+      console.error("Could not update debt:", e);
+    }
   };
 
   return (
