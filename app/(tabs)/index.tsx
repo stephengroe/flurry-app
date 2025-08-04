@@ -139,7 +139,8 @@ export default function Index() {
             ) : (
               <View className="gap-6 p-6 mx-6 items-center">
                 <Text className="text-center">
-                  No data yet. Try loading sample data to get started.
+                  No data yet. Add some, or load sample data to start. You can
+                  always load sample data in Settings.
                 </Text>
                 <Button onPress={handleSampleData}>
                   <ButtonText>Load sample data</ButtonText>
@@ -160,8 +161,8 @@ export default function Index() {
           </AlertDialogHeader>
           <AlertDialogBody className="mt-3 mb-4">
             <Text size="md">
-              Loading sample data will erase all existing data and replace it
-              with sample data. This cannot be undone.
+              Loading sample data will erase all existing debts, payments, and
+              user data and replace it with sample data. This cannot be undone.
             </Text>
           </AlertDialogBody>
           <AlertDialogFooter className="">
