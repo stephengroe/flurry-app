@@ -1,10 +1,14 @@
 import { Button, ButtonText } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
+import { Progress, ProgressFilledTrack } from "@/components/ui/progress";
+import { Text } from "@/components/ui/text";
+import { VStack } from "@/components/ui/vstack";
 import { Debt } from "@/models/Debt";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
 
 export default function DebtModal() {
   const emptyDebt: Debt = {
@@ -43,11 +47,48 @@ export default function DebtModal() {
   });
 
   return (
-    <View className="p-6 relative">
+    <ScrollView className="p-6 relative">
       <Button variant="link" onPress={router.back} className="justify-end">
         <ButtonText className="text-xl">Done</ButtonText>
       </Button>
-      <Heading className="text-3xl">{debt.name}</Heading>
-    </View>
+      <VStack space="xl">
+        <Heading className="text-3xl">{debt.name}</Heading>
+
+        <Card className="p-6 gap-4">
+          <Heading>Progress</Heading>
+          <Progress
+            size="lg"
+            value={100 - (debt.balance / debt.initialValue) * 100}
+          >
+            <ProgressFilledTrack></ProgressFilledTrack>
+          </Progress>
+
+          <View className="flex-row gap-4 w-full items-center">
+            <Card className="flex-1 items-center">
+              <Text className="font-bold text-3xl text-black">
+                {Math.floor(100 - (debt.balance / debt.initialValue) * 100)}%
+              </Text>
+              <Text>paid off</Text>
+            </Card>
+            <Card className="flex-1 items-center">
+              <Text className="font-bold text-3xl text-black text-center">
+                Nov. 2027
+              </Text>
+              <Text>freedom date</Text>
+            </Card>
+          </View>
+        </Card>
+        <Card
+          className={`p-6 gap-4 ${debt.target ? "bg-blue-100" : "bg-white"}`}
+        >
+          <Heading>{debt.target ? "Target" : "Pending"}</Heading>
+          <Text>
+            {debt.target
+              ? "Each month, pay your minimum payment and your extra amount. If you want to move faster, contribute to this debt."
+              : "Continue paying the minimum payments each month. It's the fastest way to build momentum!"}
+          </Text>
+        </Card>
+      </VStack>
+    </ScrollView>
   );
 }
