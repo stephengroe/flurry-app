@@ -120,7 +120,7 @@ export default function Index() {
           </View>
         </VStack>
 
-        <View>
+        <View className="mb-12">
           <Heading size="xl" className="m-6">
             Debts
           </Heading>

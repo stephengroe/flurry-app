@@ -87,7 +87,7 @@ export default function DebtModal() {
         <Button variant="link" onPress={router.back} className="justify-end">
           <ButtonText className="text-xl">Done</ButtonText>
         </Button>
-        <VStack space="xl">
+        <VStack space="xl" className="mb-12">
           <Heading className="text-3xl">{activeDebt.name}</Heading>
 
           {activeDebt.id !== "" && (

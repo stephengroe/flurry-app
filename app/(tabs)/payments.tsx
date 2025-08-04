@@ -25,7 +25,7 @@ export default function Payments() {
             Payments
           </Heading>
         </VStack>
-        <VStack>
+        <VStack className="pb-12">
           {payments.length > 0 && (
             <VStack space="sm">
               {payments.map((payment) => {

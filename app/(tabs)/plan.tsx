@@ -138,13 +138,13 @@ export default function Plan() {
         <Heading size="xl" className="m-6">
           Paid debts ({paidDebts.length})
         </Heading>
-        <VStack space="sm">
+        <VStack space="sm" className="mb-12">
           {paidDebts.map((debt) => {
             return <DebtCard key={debt.id} debt={debt} />;
           })}
           <Button
             size="lg"
-            className=""
+            className="m-6"
             onPress={() => router.navigate({ pathname: "../debt-modal" })}
           >
             <ButtonText className="2xl">Add Debt</ButtonText>
