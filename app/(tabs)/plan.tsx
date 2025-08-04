@@ -2,9 +2,16 @@ import { DebtCard } from "@/components/debt-card";
 import { Button, ButtonText } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
+import {
+  Slider,
+  SliderFilledTrack,
+  SliderThumb,
+  SliderTrack,
+} from "@/components/ui/slider";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { useDebtStore } from "@/stores/useDebtStore";
+import { useUserStore } from "@/stores/useUserStore";
 import { getFreedomDate } from "@/utils/freedom-date";
 import { router } from "expo-router";
 import { useEffect, useMemo } from "react";
@@ -13,6 +20,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Plan() {
   const { debts, loadDebts } = useDebtStore();
+  const { user, setUser, loadUser } = useUserStore();
 
   const pendingDebts = useMemo(() => {
     return debts
@@ -34,14 +42,15 @@ export default function Plan() {
     }, 0) / 100;
 
   const today = new Date();
-  const freedomDate = new Date(getFreedomDate(pendingDebts, 100000));
+  const freedomDate = new Date(getFreedomDate(pendingDebts, user.extraPayment));
   const monthsLeft =
     (freedomDate.getFullYear() - today.getFullYear()) * 12 +
     (freedomDate.getMonth() - today.getMonth());
 
   useEffect(() => {
     loadDebts();
-  }, [loadDebts]);
+    loadUser();
+  }, [loadDebts, loadUser]);
 
   return (
     <SafeAreaView>
@@ -51,41 +60,59 @@ export default function Plan() {
             Plan
           </Heading>
 
+          <Card className="bg-white p-6 gap-6">
+            <View className="gap-1">
+              <Heading>Extra payment</Heading>
+              <Text>
+                The fastest way to get debt-free is by paying extra on your
+                target debt each month.
+              </Text>
+            </View>
+            <View className="flex-row w-full gap-4">
+              <Card className="items-center flex-1">
+                <Text className="font-bold text-2xl text-black">
+                  ${(user.extraPayment / 100).toLocaleString()}
+                </Text>
+                <Text>extra payment</Text>
+              </Card>
+
+              <Card className="items-center flex-1">
+                <Text className="font-bold text-2xl text-black">
+                  {`${Math.floor(monthsLeft / 12)}y ${monthsLeft % 12}m`}
+                </Text>
+                <Text>until debt-free</Text>
+              </Card>
+            </View>
+
+            <Slider
+              defaultValue={user.extraPayment}
+              minValue={2500}
+              maxValue={1_000_00}
+              step={2500}
+              size="lg"
+              orientation="horizontal"
+              isDisabled={false}
+              isReversed={false}
+              value={user.extraPayment}
+              onChange={(value) => {
+                setUser({ ...user, extraPayment: value });
+              }}
+            >
+              <SliderTrack>
+                <SliderFilledTrack />
+              </SliderTrack>
+              <SliderThumb />
+            </Slider>
+          </Card>
           <View className="flex-row w-full gap-4">
-            <Card className="items-center flex-1">
-              <Text className="font-bold text-2xl text-black">
-                {Math.round((totalBalance / totalInitialValue) * 100)}%
-              </Text>
-              <Text>paid off</Text>
-            </Card>
-
-            <Card className="items-center flex-1">
-              <Text className="font-bold text-2xl text-black">
-                {`${Math.floor(monthsLeft / 12)}y ${monthsLeft % 12}m`}
-              </Text>
-              <Text>time left</Text>
-            </Card>
-          </View>
-
-          <View className="flex-row w-full gap-4">
-            <Card className="items-center flex-1">
-              <Text className="font-bold text-2xl text-black">
-                {totalBalance.toLocaleString("en-US", {
-                  style: "currency",
-                  currency: "USD",
-                })}
-              </Text>
-              <Text>total balance</Text>
-            </Card>
-
             <Card className="items-center flex-1">
               <Text className="font-bold text-2xl text-black">
                 {(
-                  pendingDebts.reduce((sum, debt) => {
+                  (pendingDebts.reduce((sum, debt) => {
                     return (sum += debt.minPayment);
-                  }, 0) /
-                    100 +
-                  1000
+                  }, 0) +
+                    user.extraPayment) /
+                  100
                 ).toLocaleString("en-US", {
                   style: "currency",
                   currency: "USD",
@@ -93,6 +120,21 @@ export default function Plan() {
               </Text>
               <Text>due monthly</Text>
             </Card>
+            <Card className="items-center flex-1">
+              <Text className="font-bold text-2xl text-black">
+                {Math.round((totalBalance / totalInitialValue) * 100)}%
+              </Text>
+              <Text>paid off</Text>
+            </Card>
+            {/* <Card className="items-center flex-1">
+              <Text className="font-bold text-2xl text-black">
+                {totalBalance.toLocaleString("en-US", {
+                  style: "currency",
+                  currency: "USD",
+                })}
+              </Text>
+              <Text>total balance</Text>
+            </Card> */}
           </View>
         </VStack>
 
@@ -101,7 +143,7 @@ export default function Plan() {
         </Heading>
         <VStack space="sm">
           {pendingDebts.map((debt) => {
-            return <DebtCard key={debt.id} debt={debt} progress={true} />;
+            return <DebtCard key={debt.id} debt={debt} />;
           })}
         </VStack>
 
@@ -110,7 +152,7 @@ export default function Plan() {
         </Heading>
         <VStack space="sm">
           {paidDebts.map((debt) => {
-            return <DebtCard key={debt.id} debt={debt} progress={true} />;
+            return <DebtCard key={debt.id} debt={debt} />;
           })}
           <Button
             size="lg"

@@ -1,19 +1,12 @@
 import { Badge, BadgeText } from "@/components/ui/badge";
 import { Heading } from "@/components/ui/heading";
-import { Progress, ProgressFilledTrack } from "@/components/ui/progress";
 import { Text } from "@/components/ui/text";
 import { Debt } from "@/types/Debt";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { router } from "expo-router";
 import { Pressable, View } from "react-native";
 
-export function DebtCard({
-  debt,
-  progress,
-}: {
-  debt: Debt;
-  progress: boolean;
-}) {
+export function DebtCard({ debt }: { debt: Debt }) {
   const handlePress = () => {
     router.navigate({ pathname: "../debt-modal", params: { id: debt.id } });
   };
@@ -45,15 +38,6 @@ export function DebtCard({
           </Badge>
         </View>
       </View>
-      {progress && (
-        <Progress
-          value={100 - (debt.balance / debt.initialValue) * 100}
-          size="sm"
-          orientation="horizontal"
-        >
-          <ProgressFilledTrack />
-        </Progress>
-      )}
     </Pressable>
   );
 }

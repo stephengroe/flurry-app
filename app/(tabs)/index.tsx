@@ -109,9 +109,7 @@ export default function Index() {
             {filteredDebts.length > 0 ? (
               <VStack space="sm">
                 {filteredDebts.map((debt) => {
-                  return (
-                    <DebtCard key={debt.id} debt={debt} progress={false} />
-                  );
+                  return <DebtCard key={debt.id} debt={debt} />;
                 })}
               </VStack>
             ) : (
