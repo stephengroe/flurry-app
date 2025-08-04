@@ -19,7 +19,7 @@ import { useEffect, useMemo } from "react";
 import { Alert, ScrollView } from "react-native";
 
 export default function PaymentModal() {
-  const { id } = useLocalSearchParams();
+  const { id, debtId } = useLocalSearchParams();
   const { user } = useUserStore();
   const { payments, loadPayments, setPayments } = usePaymentStore();
   const { debts, loadDebts } = useDebtStore();
@@ -34,8 +34,9 @@ export default function PaymentModal() {
     };
 
     let foundPayment = payments.find((p) => p.id === id);
+    if (debtId) defaultPayment.debtId = debtId[0];
     return foundPayment ?? defaultPayment;
-  }, [payments, id]);
+  }, [payments, id, debtId]);
 
   const activeDebt: Debt | undefined = useMemo(() => {
     return debts.find((d) => d.id === activePayment.debtId);

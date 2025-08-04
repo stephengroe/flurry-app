@@ -75,6 +75,15 @@ export default function DebtModal() {
     );
   };
 
+  const logPayment = () => {
+    if (activeDebt) {
+      router.navigate({
+        pathname: "../payment-modal",
+        params: { debtId: activeDebt.id },
+      });
+    }
+  };
+
   useEffect(() => {
     loadDebts();
   }, [loadDebts]);
@@ -229,7 +238,7 @@ export default function DebtModal() {
               </Card>
 
               <VStack space="md">
-                <Button size="lg">
+                <Button size="lg" onPress={logPayment}>
                   <ButtonText>Log payment</ButtonText>
                 </Button>
                 <Button size="lg" action="negative" onPress={handleDelete}>
