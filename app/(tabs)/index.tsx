@@ -92,98 +92,100 @@ export default function Index() {
   if (!debts) return null;
 
   return (
-    <SafeAreaView>
-      <ScrollView>
-        <VStack className="m-6 mb-3" space="xl">
-          <View className="flex-row justify-between items-center">
-            <Heading size="3xl" className="flex-start">
-              {user.name === "User" ? "Welcome" : `Welcome, ${user.name}`}
-            </Heading>
-            <Link href="/settings">
-              <Ionicons name="settings-outline" size={24} color="grey" />
-            </Link>
-          </View>
-          <Card
-            size="lg"
-            variant="elevated"
-            className="items-center flex-row gap-4"
-          >
-            <Ionicons name="today-outline" size={24} color="grey" />
-            <View>
-              <Text className="text-xl font-bold text-black">
-                {new Date(getFreedomDate(debts, 10000)).toLocaleDateString(
-                  "en-US",
-                  { month: "long", year: "numeric" }
-                )}
-              </Text>
-              <Text className="text-lg center">Debt freedom date</Text>
+    <>
+      <SafeAreaView>
+        <ScrollView>
+          <VStack className="m-6 mb-3" space="xl">
+            <View className="flex-row justify-between items-center">
+              <Heading size="3xl" className="flex-start">
+                {user.name === "User" ? "Welcome" : `Welcome, ${user.name}`}
+              </Heading>
+              <Link href="/settings">
+                <Ionicons name="settings-outline" size={24} color="grey" />
+              </Link>
             </View>
-          </Card>
-          <Card
-            size="lg"
-            variant="elevated"
-            className="flex-row items-center gap-4"
-          >
-            <Ionicons name="flame-outline" size={24} color="grey" />
-            <View>
-              <Text className="text-xl font-bold text-black">17 months</Text>
-              <Text className="text-lg center">Payment streak</Text>
-            </View>
-          </Card>
-          <View>
-            <Button onPress={handleSampleData}>
-              <ButtonText>Load sample data</ButtonText>
-            </Button>
-            <AlertDialog
-              isOpen={showAlertDialog}
-              onClose={handleClose}
-              size="md"
+            <Card
+              size="lg"
+              variant="elevated"
+              className="items-center flex-row gap-4"
             >
-              <AlertDialogBackdrop />
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <Heading
-                    className="text-typography-950 font-semibold"
-                    size="md"
-                  >
-                    Overwrite existing data?
-                  </Heading>
-                </AlertDialogHeader>
-                <AlertDialogBody className="mt-3 mb-4">
-                  <Text size="md">
-                    Loading sample data will erase all existing data and replace
-                    it with sample data. This cannot be undone.
-                  </Text>
-                </AlertDialogBody>
-                <AlertDialogFooter className="">
-                  <Button
-                    variant="outline"
-                    action="secondary"
-                    onPress={handleClose}
-                    size="sm"
-                  >
-                    <ButtonText>Cancel</ButtonText>
-                  </Button>
-                  <Button size="sm" onPress={handleOverwrite}>
-                    <ButtonText>Overwrite</ButtonText>
-                  </Button>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </View>
-        </VStack>
-
-        <View>
-          <Heading size="xl" className="m-6">
-            Debts
-          </Heading>
-          <VStack space="sm">
-            {debts.map((debt) => {
-              return <DebtCard key={debt.id} debt={debt} progress={false} />;
-            })}
+              <Ionicons name="today-outline" size={24} color="grey" />
+              <View>
+                <Text className="text-xl font-bold text-black">
+                  {new Date(getFreedomDate(debts, 10000)).toLocaleDateString(
+                    "en-US",
+                    { month: "long", year: "numeric" }
+                  )}
+                </Text>
+                <Text className="text-lg center">Debt freedom date</Text>
+              </View>
+            </Card>
+            <Card
+              size="lg"
+              variant="elevated"
+              className="flex-row items-center gap-4"
+            >
+              <Ionicons name="flame-outline" size={24} color="grey" />
+              <View>
+                <Text className="text-xl font-bold text-black">17 months</Text>
+                <Text className="text-lg center">Payment streak</Text>
+              </View>
+            </Card>
           </VStack>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+
+          <View>
+            <Heading size="xl" className="m-6">
+              Debts
+            </Heading>
+            {debts.length > 0 ? (
+              <VStack space="sm">
+                {debts.map((debt) => {
+                  return (
+                    <DebtCard key={debt.id} debt={debt} progress={false} />
+                  );
+                })}
+              </VStack>
+            ) : (
+              <View>
+                <Text>No data yet. Try loading sample data.</Text>
+                <Button onPress={handleSampleData}>
+                  <ButtonText>Load sample data</ButtonText>
+                </Button>
+              </View>
+            )}
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+
+      <AlertDialog isOpen={showAlertDialog} onClose={handleClose} size="md">
+        <AlertDialogBackdrop />
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <Heading className="text-typography-950 font-semibold" size="md">
+              Overwrite existing data?
+            </Heading>
+          </AlertDialogHeader>
+          <AlertDialogBody className="mt-3 mb-4">
+            <Text size="md">
+              Loading sample data will erase all existing data and replace it
+              with sample data. This cannot be undone.
+            </Text>
+          </AlertDialogBody>
+          <AlertDialogFooter className="">
+            <Button
+              variant="outline"
+              action="secondary"
+              onPress={handleClose}
+              size="sm"
+            >
+              <ButtonText>Cancel</ButtonText>
+            </Button>
+            <Button size="sm" onPress={handleOverwrite}>
+              <ButtonText>Overwrite</ButtonText>
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }
