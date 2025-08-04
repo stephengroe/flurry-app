@@ -66,7 +66,7 @@ export default function Plan() {
             <View className="gap-1">
               <Heading>Extra payment</Heading>
               <Text>
-                The fastest way to get debt-free is by paying extra on your
+                The fastest way to get debt-free is to put extra toward your
                 target debt each month.
               </Text>
             </View>
