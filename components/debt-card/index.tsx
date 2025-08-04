@@ -2,7 +2,7 @@ import { Badge, BadgeText } from "@/components/ui/badge";
 import { Heading } from "@/components/ui/heading";
 import { Progress, ProgressFilledTrack } from "@/components/ui/progress";
 import { Text } from "@/components/ui/text";
-import { Debt } from "@/models/Debt";
+import { Debt } from "@/types/Debt";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { router } from "expo-router";
 import { Pressable, View } from "react-native";

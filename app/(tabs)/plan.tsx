@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
-import { Debt } from "@/models/Debt";
+import { Debt } from "@/types/Debt";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";

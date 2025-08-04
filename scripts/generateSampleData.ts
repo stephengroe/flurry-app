@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Debt } from "../models/Debt";
-import { Payment } from "../models/Payment";
-import { User } from "../models/User";
+import { Debt } from "../types/Debt";
+import { Payment } from "../types/Payment";
+import { User } from "../types/User";
 
 export async function generateSampleData() {
   const sampleUser: User = {

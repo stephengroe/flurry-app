@@ -1,4 +1,4 @@
-import { Debt } from "@/models/Debt";
+import { Debt } from "@/types/Debt";
 import { debounce } from "@/utils/debounce";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState } from "react";

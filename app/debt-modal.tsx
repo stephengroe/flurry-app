@@ -14,7 +14,7 @@ import { Progress, ProgressFilledTrack } from "@/components/ui/progress";
 import { Spinner } from "@/components/ui/spinner";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
-import { Debt } from "@/models/Debt";
+import { Debt } from "@/types/Debt";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
