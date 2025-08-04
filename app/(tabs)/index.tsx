@@ -101,7 +101,7 @@ export default function Index() {
               <Heading size="3xl" className="flex-start">
                 {user.name === "User" ? "Welcome" : `Welcome, ${user.name}`}
               </Heading>
-              <Link href="/settings">
+              <Link href="../settings-modal">
                 <Ionicons name="settings-outline" size={24} color="grey" />
               </Link>
             </View>
