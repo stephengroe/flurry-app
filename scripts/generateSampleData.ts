@@ -127,8 +127,7 @@ export async function generateSampleData() {
 
   try {
     await AsyncStorage.multiSet([user, debts, payments]);
-    console.log("Saved sample data");
   } catch (e) {
-    console.log(e);
+    console.error("Unable to load sample data:", e);
   }
 }
