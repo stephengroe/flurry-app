@@ -84,40 +84,42 @@ export default function Index() {
               <Ionicons name="settings-outline" size={24} color="grey" />
             </Link>
           </View>
-          <View className="flex-row gap-3 w-full">
-            <Card
-              size="lg"
-              variant="elevated"
-              className="items-center flex-row gap-4 flex-1 w-1/2"
-            >
-              <Ionicons name="today-outline" size={24} color="grey" />
-              <View>
-                <Text className="text-xl font-bold text-black">
-                  {new Date(
-                    getFreedomDate(filteredDebts, user.extraPayment)
-                  ).toLocaleDateString("en-US", {
-                    month: "short",
-                    year: "numeric",
-                  })}
-                </Text>
-                <Text className="text-lg center">Debt-free</Text>
-              </View>
-            </Card>
+          {debts.length > 0 && (
+            <View className="flex-row gap-3 w-full">
+              <Card
+                size="lg"
+                variant="elevated"
+                className="items-center flex-row gap-4 flex-1 w-1/2"
+              >
+                <Ionicons name="today-outline" size={24} color="grey" />
+                <View>
+                  <Text className="text-xl font-bold text-black">
+                    {new Date(
+                      getFreedomDate(filteredDebts, user.extraPayment)
+                    ).toLocaleDateString("en-US", {
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </Text>
+                  <Text className="text-lg center">Debt-free</Text>
+                </View>
+              </Card>
 
-            <Card
-              size="lg"
-              variant="elevated"
-              className="items-center flex-row gap-4 flex-1 w-1/2"
-            >
-              <Ionicons name="flame-outline" size={24} color="grey" />
-              <View>
-                <Text className="text-xl font-bold text-black">
-                  {percentagePaid}%
-                </Text>
-                <Text className="text-lg center">Paid off</Text>
-              </View>
-            </Card>
-          </View>
+              <Card
+                size="lg"
+                variant="elevated"
+                className="items-center flex-row gap-4 flex-1 w-1/2"
+              >
+                <Ionicons name="flame-outline" size={24} color="grey" />
+                <View>
+                  <Text className="text-xl font-bold text-black">
+                    {percentagePaid}%
+                  </Text>
+                  <Text className="text-lg center">Paid off</Text>
+                </View>
+              </Card>
+            </View>
+          )}
         </VStack>
 
         <View className="mb-12">
